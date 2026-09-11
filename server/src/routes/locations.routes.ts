@@ -12,4 +12,21 @@ locationRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
+locationRouter.get("/:id", async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    const location = await pool.query("SELECT * FROM locations WHERE id = $1", [
+      id,
+    ]);
+
+    if (location.rows.length === 0) {
+      res.status(404).json({ error: "Location not found" });
+      return;
+    }
+    res.json(location.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch location" });
+  }
+});
+
 export default locationRouter;

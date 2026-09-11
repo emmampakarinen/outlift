@@ -1,26 +1,46 @@
-INSERT INTO users (username)
-VALUES ('emma');
+INSERT INTO users (username) VALUES ('emma');
 
-INSERT INTO equipment (name)
-VALUES
-  ('Pull-up bar'),
-  ('Dip bars'),
-  ('Bench');
+INSERT INTO
+    equipment (name)
+VALUES ('Pull-up bar'),
+    ('Dip bars'),
+    ('Bench');
 
-INSERT INTO locations (name, latitude, longitude, description, created_by)
+INSERT INTO
+    locations (
+        name,
+        latitude,
+        longitude,
+        description,
+        created_by
+    )
 VALUES (
-  'Test Park',
-  60.1699,
-  24.9384,
-  'Outdoor workout park',
-  1
-);
+        'Test Park',
+        60.1699,
+        24.9384,
+        'Outdoor workout park',
+        1
+    );
 
-INSERT INTO location_equipment (location_id, equipment_id)
-VALUES
-  (1, 1),
-  (1, 2);
+INSERT INTO
+    locations (
+        name,
+        latitude,
+        longitude,
+        description,
+        created_by
+    )
+VALUES (
+        'Test Park 2',
+        70.1699,
+        30.9384,
+        'Skate park',
+        1
+    );
 
-INSERT INTO workouts (user_id, location_id)
-VALUES (1, 1);
+INSERT INTO
+    location_equipment (location_id, equipment_id)
+VALUES (1, 1),
+    (1, 2);
 
+INSERT INTO workouts (user_id, location_id) VALUES (1, 1);
