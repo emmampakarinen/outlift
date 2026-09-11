@@ -24,16 +24,22 @@ CREATE TABLE workouts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE exercise (
+CREATE TABLE exercises (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    description TEXT
+    category VARCHAR(100),
+    primary_muscle VARCHAR(100),
+    created_by INTEGER REFERENCES users (id),
+    is_default BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX unique_exercise_name ON exercises (LOWER(name));
 
 CREATE TABLE workout_exercise (
     id SERIAL PRIMARY KEY,
     workout_id INTEGER NOT NULL REFERENCES workouts (id) ON DELETE CASCADE,
-    exercise_id INTEGER NOT NULL REFERENCES exercise (id),
+    exercise_id INTEGER NOT NULL REFERENCES exercises (id),
     sets INTEGER NOT NULL,
     reps INTEGER NOT NULL,
     weight DECIMAL

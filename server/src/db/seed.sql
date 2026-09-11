@@ -44,3 +44,318 @@ VALUES (1, 1),
     (1, 2);
 
 INSERT INTO workouts (user_id, location_id) VALUES (1, 1);
+
+INSERT INTO
+    exercises (
+        name,
+        category,
+        primary_muscle,
+        is_default
+    )
+VALUES (
+        'Bench Press',
+        'strength',
+        'chest',
+        TRUE
+    ),
+    (
+        'Incline Bench Press',
+        'strength',
+        'chest',
+        TRUE
+    ),
+    (
+        'Push Up',
+        'calisthenics',
+        'chest',
+        TRUE
+    ),
+    (
+        'Chest Fly',
+        'strength',
+        'chest',
+        TRUE
+    ),
+    (
+        'Back Squat',
+        'strength',
+        'quadriceps',
+        TRUE
+    ),
+    (
+        'Front Squat',
+        'strength',
+        'quadriceps',
+        TRUE
+    ),
+    (
+        'Goblet Squat',
+        'strength',
+        'quadriceps',
+        TRUE
+    ),
+    (
+        'Leg Press',
+        'strength',
+        'quadriceps',
+        TRUE
+    ),
+    (
+        'Leg Extension',
+        'strength',
+        'quadriceps',
+        TRUE
+    ),
+    (
+        'Deadlift',
+        'strength',
+        'back',
+        TRUE
+    ),
+    (
+        'Romanian Deadlift',
+        'strength',
+        'hamstrings',
+        TRUE
+    ),
+    (
+        'Barbell Row',
+        'strength',
+        'back',
+        TRUE
+    ),
+    (
+        'Dumbbell Row',
+        'strength',
+        'back',
+        TRUE
+    ),
+    (
+        'Lat Pulldown',
+        'strength',
+        'back',
+        TRUE
+    ),
+    (
+        'Pull Up',
+        'calisthenics',
+        'back',
+        TRUE
+    ),
+    (
+        'Chin Up',
+        'calisthenics',
+        'back',
+        TRUE
+    ),
+    (
+        'Overhead Press',
+        'strength',
+        'shoulders',
+        TRUE
+    ),
+    (
+        'Dumbbell Shoulder Press',
+        'strength',
+        'shoulders',
+        TRUE
+    ),
+    (
+        'Lateral Raise',
+        'strength',
+        'shoulders',
+        TRUE
+    ),
+    (
+        'Face Pull',
+        'strength',
+        'shoulders',
+        TRUE
+    ),
+    (
+        'Bicep Curl',
+        'strength',
+        'biceps',
+        TRUE
+    ),
+    (
+        'Hammer Curl',
+        'strength',
+        'biceps',
+        TRUE
+    ),
+    (
+        'Tricep Pushdown',
+        'strength',
+        'triceps',
+        TRUE
+    ),
+    (
+        'Skull Crusher',
+        'strength',
+        'triceps',
+        TRUE
+    ),
+    (
+        'Dip',
+        'calisthenics',
+        'triceps',
+        TRUE
+    ),
+    (
+        'Hip Thrust',
+        'strength',
+        'glutes',
+        TRUE
+    ),
+    (
+        'Glute Bridge',
+        'strength',
+        'glutes',
+        TRUE
+    ),
+    (
+        'Bulgarian Split Squat',
+        'strength',
+        'glutes',
+        TRUE
+    ),
+    (
+        'Walking Lunge',
+        'strength',
+        'glutes',
+        TRUE
+    ),
+    (
+        'Leg Curl',
+        'strength',
+        'hamstrings',
+        TRUE
+    ),
+    (
+        'Calf Raise',
+        'strength',
+        'calves',
+        TRUE
+    ),
+    (
+        'Clean',
+        'olympic_weightlifting',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Power Clean',
+        'olympic_weightlifting',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Clean and Jerk',
+        'olympic_weightlifting',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Snatch',
+        'olympic_weightlifting',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Power Snatch',
+        'olympic_weightlifting',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Thruster',
+        'crossfit',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Kettlebell Swing',
+        'crossfit',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Wall Ball',
+        'crossfit',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Burpee',
+        'crossfit',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Box Jump',
+        'crossfit',
+        'legs',
+        TRUE
+    ),
+    (
+        'Double Under',
+        'crossfit',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Muscle Up',
+        'calisthenics',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Handstand Push Up',
+        'calisthenics',
+        'shoulders',
+        TRUE
+    ),
+    (
+        'Pistol Squat',
+        'calisthenics',
+        'quadriceps',
+        TRUE
+    ),
+    ('Plank', 'core', 'core', TRUE),
+    (
+        'Hanging Leg Raise',
+        'core',
+        'core',
+        TRUE
+    ),
+    (
+        'Ab Wheel Rollout',
+        'core',
+        'core',
+        TRUE
+    ),
+    (
+        'Running',
+        'cardio',
+        'legs',
+        TRUE
+    ),
+    (
+        'Cycling',
+        'cardio',
+        'legs',
+        TRUE
+    ),
+    (
+        'Rowing',
+        'cardio',
+        'full_body',
+        TRUE
+    ),
+    (
+        'Ski Erg',
+        'cardio',
+        'full_body',
+        TRUE
+    );

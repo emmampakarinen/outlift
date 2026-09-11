@@ -4,19 +4,47 @@ import type { CreateWorkout, Workout } from "#shared/types.js";
 
 const workoutRouter = Router();
 
+// get all workouts with exercises for a specific location
 workoutRouter.get("/:id", async (req: Request, res: Response) => {
   const locationId = req.params.id;
   try {
-    const result = await pool.query(
+    const workoutResult = await pool.query(
       "SELECT * FROM workouts WHERE location_id = $1",
       [locationId],
     );
-    const workouts = result.rows;
 
-    if (workouts.length === 0) {
-      return res.status(404).send("No workouts saved for this location");
+    if (workoutResult.rows.length === 0) {
+      return res.status(404).json({ error: "Workout not found" });
     }
-    return res.json(workouts);
+
+    const workoutsWithExercises = [];
+
+    for (const workout of workoutResult.rows) {
+      let workoutId = workout.id;
+      const exerciseResult = await pool.query(
+        `SELECT
+          we.id,
+          we.sets,
+          we.reps,
+          we.weight,
+          e.id AS exercise_id,
+          e.name,
+          e.category,
+          e.primary_muscle
+          FROM workout_exercise we
+          JOIN exercises e ON e.id = we.exercise_id
+          WHERE we.workout_id = $1
+          `,
+        [workoutId],
+      );
+
+      workoutsWithExercises.push({
+        ...workout,
+        exercises: exerciseResult.rows,
+      });
+    }
+
+    return res.json(workoutsWithExercises);
   } catch (error) {
     console.log(error);
     return res
