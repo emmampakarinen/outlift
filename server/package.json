@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "pg": "^8.23.0",
+    "pg-pool": "^3.14.0",
+    "pg-promise": "^12.7.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.5.0",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env --import=tsx --watch src/index.ts"
+  }
+}
