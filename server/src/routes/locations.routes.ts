@@ -68,4 +68,26 @@ locationRouter.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
+locationRouter.patch("/:id", async (req: Request, res: Response) => {
+  const { name, description } = req.body;
+  const locationId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `UPDATE locations
+        SET 
+          name = COALESCE($1, name),
+          description = COALESCE($2, description)
+        WHERE id = $3
+        RETURNING *`,
+      [name, description, locationId],
+    );
+
+    return res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Failed to patch location:", error);
+    res.status(500).json("Failed to patch location");
+  }
+});
+
 export default locationRouter;

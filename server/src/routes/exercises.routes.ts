@@ -18,7 +18,7 @@ exerciseRouter.post("/", async (req: Request, res: Response) => {
   const userId = 1; // placeholder for the user ID, replace with actual user ID from authentication
   try {
     const result = await pool.query(
-      `INSERT INTO exercise (name, category, primary_muscle, created_by)
+      `INSERT INTO exercises (name, category, primary_muscle, created_by)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
       [name, category, primary_muscle, userId],
@@ -48,6 +48,28 @@ exerciseRouter.delete("/:id", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Failed to delete exercise:", error);
     res.status(500).json({ error: "Failed to delete exercise" });
+  }
+});
+
+exerciseRouter.patch("/:id", async (req: Request, res: Response) => {
+  const { name, category, primary_muscle } = req.body;
+  const exerciseId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `UPDATE exercises
+        SET
+            name = COALESCE($1, name),
+            category = COALESCE($2, category),
+            primary_muscle = COALESCE($3, primary_muscle)
+        WHERE id = $4`,
+      [name, category, primary_muscle, exerciseId],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Failed to patch exercise:", error);
+    res.status(500).json({ error: "Failed to patch exercise" });
   }
 });
 
