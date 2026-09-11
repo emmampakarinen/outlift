@@ -1,15 +1,17 @@
-import express, { type Express, type Request, type Response } from 'express';
-import locationRouter from './routes/locations.routes.js';
+import express, { type Express, type Request, type Response } from "express";
+import locationRouter from "./routes/locations.routes.js";
+import workoutRouter from "./routes/workouts.routes.js";
 
 const app: Express = express();
 const port = 3000;
 app.use(express.json());
 
-app.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok'});
+app.get("/health", (req: Request, res: Response) => {
+  res.json({ status: "ok" });
 });
 
 app.use("/locations", locationRouter);
+app.use("/workouts", workoutRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
