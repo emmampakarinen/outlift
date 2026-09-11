@@ -16,5 +16,8 @@
   },
   "scripts": {
     "dev": "node --env-file=.env --import=tsx --watch src/index.ts"
+  },
+  "imports": {
+    "#*": "./src/*"
   }
 }
