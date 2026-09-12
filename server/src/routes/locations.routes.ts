@@ -90,4 +90,70 @@ locationRouter.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
+locationRouter.get("/:id/equipment", async (req: Request, res: Response) => {
+  const locationId = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `SELECT equipment.id, equipment.name
+      FROM location_equipment
+      INNER JOIN equipment
+      ON location_equipment.equipment_id = equipment.id
+      WHERE location_equipment.location_id = $1`,
+      [locationId],
+    );
+
+    return res.json(result.rows);
+  } catch (error) {
+    console.error("Failed to get location's equipment:", error);
+    res.status(500).json("Failed to get location's equipment");
+  }
+});
+
+locationRouter.post("/:id/equipment", async (req: Request, res: Response) => {
+  const equipmentIds = req.body.equipmentIds;
+  const locationId = req.params.id;
+
+  try {
+    await pool.query(
+      `INSERT INTO location_equipment (location_id, equipment_id)
+        SELECT $1, UNNEST($2::int[])`,
+      [locationId, equipmentIds],
+    );
+
+    return res.status(201).json({
+      message: "Equipment added to location",
+    });
+  } catch (error) {
+    console.error("Failed to add location's equipment:", error);
+    res.status(500).json("Failed to add location's equipment");
+  }
+});
+
+locationRouter.delete(
+  "/:id/equipment/:equipmentId",
+  async (req: Request, res: Response) => {
+    const equipmentId = req.params.equipmentId;
+    const locationId = req.params.id;
+
+    try {
+      const result = await pool.query(
+        `
+          DELETE FROM location_equipment
+          WHERE location_id = $1
+          AND equipment_id = $2
+        `,
+        [locationId, equipmentId],
+      );
+
+      return res.status(201).json({
+        message: "Equipment deleted from location",
+      });
+    } catch (error) {
+      console.error("Failed to delete location's equipment:", error);
+      res.status(500).json("Failed to delete location's equipment");
+    }
+  },
+);
+
 export default locationRouter;

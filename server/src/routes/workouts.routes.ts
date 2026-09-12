@@ -5,8 +5,8 @@ import type { CreateWorkout, UpdateWorkout } from "#shared/types.js";
 const workoutRouter = Router();
 
 // get all workouts with exercises for a specific location
-workoutRouter.get("/:id", async (req: Request, res: Response) => {
-  const locationId = req.params.id;
+workoutRouter.get("/:locationId", async (req: Request, res: Response) => {
+  const locationId = req.params.locationId;
   try {
     const workoutResult = await pool.query(
       "SELECT * FROM workouts WHERE location_id = $1",

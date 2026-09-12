@@ -1,12 +1,6 @@
 INSERT INTO users (username) VALUES ('emma');
 
 INSERT INTO
-    equipment (name)
-VALUES ('Pull-up bar'),
-    ('Dip bars'),
-    ('Bench');
-
-INSERT INTO
     locations (
         name,
         latitude,
@@ -37,11 +31,6 @@ VALUES (
         'Skate park',
         1
     );
-
-INSERT INTO
-    location_equipment (location_id, equipment_id)
-VALUES (1, 1),
-    (1, 2);
 
 INSERT INTO workouts (user_id, location_id) VALUES (1, 1);
 
@@ -359,3 +348,37 @@ VALUES (
         'full_body',
         TRUE
     );
+
+INSERT INTO
+    equipment (name)
+VALUES ('Pull-up bar'),
+    ('Dip bars'),
+    ('Parallel bars'),
+    ('Monkey bars'),
+    ('Bench'),
+    ('Sit-up bench'),
+    ('Back extension bench'),
+    ('Leg press'),
+    ('Chest press'),
+    ('Shoulder press'),
+    ('Lat pulldown'),
+    ('Row machine'),
+    ('Air walker'),
+    ('Elliptical trainer'),
+    ('Exercise bike'),
+    ('Stepper'),
+    ('Twist machine'),
+    ('Balance board'),
+    ('Barbell'),
+    ('No equipment');
+
+INSERT INTO
+    location_equipment (location_id, equipment_id)
+VALUES (1, 1),
+    (1, 2),
+    (1, 3),
+    (1, 5),
+    (2, 1),
+    (2, 4),
+    (2, 6),
+    (2, 8);
