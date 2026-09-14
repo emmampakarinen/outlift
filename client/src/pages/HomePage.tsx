@@ -4,11 +4,11 @@ import { MapPreview } from "../components/MapPreview";
 import { NearbySpotCard } from "../components/NearbySpotCard";
 import { WorkoutCard } from "../components/WorkoutCard";
 import { getWorkouts } from "../api/workouts";
-import type { Location } from "../shared/types";
+import type { Location, Workout } from "../shared/types";
 import { getLocations } from "../api/locations";
 
 export function HomePage() {
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
 
   async function loadLocations() {
@@ -45,6 +45,7 @@ export function HomePage() {
             .map((location) => (
               <NearbySpotCard
                 key={location.id}
+                id={location.id}
                 name={location.name}
                 description={location.description}
               />

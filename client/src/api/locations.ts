@@ -31,3 +31,13 @@ export async function createLocation(location: CreateLocationData) {
 
   return response.json();
 }
+
+export async function getLocationById(id: number) {
+  const response = await fetch(`${API_URL}/locations/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch location");
+  }
+
+  return response.json();
+}

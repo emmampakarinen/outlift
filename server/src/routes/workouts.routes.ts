@@ -53,25 +53,21 @@ workoutRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// get all workouts with exercises for a specific location
-workoutRouter.get("/:locationId", async (req: Request, res: Response) => {
-  const locationId = req.params.locationId;
+workoutRouter.get("/:workoutId", async (req: Request, res: Response) => {
+  const workoutId = req.params.workoutId;
+  console.log("Fetching workout with ID:", workoutId);
   try {
     const workoutResult = await pool.query(
-      "SELECT * FROM workouts WHERE location_id = $1",
-      [locationId],
+      "SELECT * FROM workouts WHERE id = $1",
+      [workoutId],
     );
 
     if (workoutResult.rows.length === 0) {
       return res.status(404).json({ error: "Workout not found" });
     }
 
-    const workoutsWithExercises = [];
-
-    for (const workout of workoutResult.rows) {
-      let workoutId = workout.id;
-      const exerciseResult = await pool.query(
-        `SELECT
+    const exerciseResult = await pool.query(
+      `SELECT
           we.id,
           we.sets,
           we.reps,
@@ -84,23 +80,70 @@ workoutRouter.get("/:locationId", async (req: Request, res: Response) => {
           JOIN exercises e ON e.id = we.exercise_id
           WHERE we.workout_id = $1
           `,
-        [workoutId],
-      );
+      [workoutId],
+    );
 
-      workoutsWithExercises.push({
-        ...workout,
-        exercises: exerciseResult.rows,
-      });
-    }
-
-    return res.json(workoutsWithExercises);
+    return res.json({
+      ...workoutResult.rows[0],
+      exercises: exerciseResult.rows,
+    });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ error: "Failed to fetch workouts for location" });
+    return res.status(500).json({ error: "Failed to fetch workout" });
   }
 });
+
+// get all workouts with exercises for a specific location
+workoutRouter.get(
+  "/location/:locationId",
+  async (req: Request, res: Response) => {
+    const locationId = req.params.locationId;
+    try {
+      const workoutResult = await pool.query(
+        "SELECT * FROM workouts WHERE location_id = $1",
+        [locationId],
+      );
+
+      if (workoutResult.rows.length === 0) {
+        return res.status(404).json({ error: "Workout not found" });
+      }
+
+      const workoutsWithExercises = [];
+
+      for (const workout of workoutResult.rows) {
+        let workoutId = workout.id;
+        const exerciseResult = await pool.query(
+          `SELECT
+          we.id,
+          we.sets,
+          we.reps,
+          we.weight,
+          e.id AS exercise_id,
+          e.name,
+          e.category,
+          e.primary_muscle
+          FROM workout_exercise we
+          JOIN exercises e ON e.id = we.exercise_id
+          WHERE we.workout_id = $1
+          `,
+          [workoutId],
+        );
+
+        workoutsWithExercises.push({
+          ...workout,
+          exercises: exerciseResult.rows,
+        });
+      }
+
+      return res.json(workoutsWithExercises);
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch workouts for location" });
+    }
+  },
+);
 
 workoutRouter.post("/", async (req: Request, res: Response) => {
   const {
