@@ -1,9 +1,20 @@
-function App() {
+import { Route, Routes } from "react-router-dom";
+import { AppLayout } from "./layouts/AppLayout";
+import { HomePage } from "./pages/HomePage";
+import WorkoutsPage from "./pages/WorkoutsPage";
+import LibraryPage from "./pages/LibraryPage";
+import ProfilePage from "./pages/ProfilePage";
+//import { WorkoutsPage } from "./pages/WorkoutsPage";
+
+export default function App() {
   return (
-    <main className="min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold">Outlift</h1>
-    </main>
+    <Routes>
+      <Route element={<AppLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/workouts" element={<WorkoutsPage />} />
+        <Route path="/library" element={<LibraryPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+      </Route>
+    </Routes>
   );
 }
-
-export default App;

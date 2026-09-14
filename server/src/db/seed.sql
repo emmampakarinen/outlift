@@ -32,7 +32,49 @@ VALUES (
         1
     );
 
-INSERT INTO workouts (user_id, location_id) VALUES (1, 1);
+INSERT INTO
+    workouts (
+        user_id,
+        location_id,
+        name,
+        description,
+        duration_minutes
+    )
+VALUES (
+        1,
+        1,
+        'Morning Circuit',
+        'Full body outdoor workout',
+        45
+    ),
+    (
+        1,
+        1,
+        'Upper Body Strength',
+        'Pull-ups, dips and push-ups',
+        50
+    ),
+    (
+        1,
+        2,
+        'Leg Day',
+        'Lower body strength workout',
+        60
+    ),
+    (
+        1,
+        2,
+        'Quick HIIT',
+        'Short high intensity workout',
+        25
+    ),
+    (
+        1,
+        NULL,
+        'Home Mobility',
+        'Light mobility and recovery session',
+        30
+    );
 
 INSERT INTO
     exercises (

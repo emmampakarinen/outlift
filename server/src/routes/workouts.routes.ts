@@ -4,6 +4,55 @@ import type { CreateWorkout, UpdateWorkout } from "#shared/types.js";
 
 const workoutRouter = Router();
 
+// get user's workouts
+workoutRouter.get("/", async (req: Request, res: Response) => {
+  const userId = 1; // TODO change to real user id from jwt
+  try {
+    const workoutResult = await pool.query(
+      "SELECT * FROM workouts WHERE user_id = $1",
+      [userId],
+    );
+
+    if (workoutResult.rows.length === 0) {
+      return res.status(404).json({ error: "Workout not found" });
+    }
+
+    const workoutsWithExercises = [];
+
+    for (const workout of workoutResult.rows) {
+      let workoutId = workout.id;
+      const exerciseResult = await pool.query(
+        `SELECT
+          we.id,
+          we.sets,
+          we.reps,
+          we.weight,
+          e.id AS exercise_id,
+          e.name,
+          e.category,
+          e.primary_muscle
+          FROM workout_exercise we
+          JOIN exercises e ON e.id = we.exercise_id
+          WHERE we.workout_id = $1
+          `,
+        [workoutId],
+      );
+
+      workoutsWithExercises.push({
+        ...workout,
+        exercises: exerciseResult.rows,
+      });
+    }
+
+    return res.json(workoutsWithExercises);
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch workouts for location" });
+  }
+});
+
 // get all workouts with exercises for a specific location
 workoutRouter.get("/:locationId", async (req: Request, res: Response) => {
   const locationId = req.params.locationId;
