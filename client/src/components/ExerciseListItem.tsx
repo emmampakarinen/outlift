@@ -3,15 +3,12 @@ import type { Exercise } from "../shared/types";
 
 type Props = {
   exercise: Exercise;
-  onAdd: (exercise: Exercise) => void;
+  onAdd?: (exercise: Exercise) => void;
 };
 
-export function Exercise({ exercise, onAdd }: Props) {
+export function ExerciseListItem({ exercise, onAdd }: Props) {
   return (
-    <article
-      key={exercise.id}
-      className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-    >
+    <article className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="min-w-0">
         <h2 className="font-bold text-slate-900">{exercise.name}</h2>
 
@@ -31,15 +28,15 @@ export function Exercise({ exercise, onAdd }: Props) {
           {exercise.category}
         </span>
 
-        <button
-          onClick={() => onAdd(exercise)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a4332] text-white transition hover:opacity-90"
-        >
-          <Plus size={20} />
-        </button>
+        {onAdd && (
+          <button
+            onClick={() => onAdd(exercise)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a4332] text-white transition hover:opacity-90"
+          >
+            <Plus size={20} />
+          </button>
+        )}
       </div>
     </article>
   );
 }
-
-export default Exercise;

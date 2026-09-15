@@ -3,7 +3,7 @@ import { ArrowLeft, Search } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getExercises } from "../api/exercises.ts";
 import { ExerciseCategory } from "../components/ExerciseCategory.tsx";
-import { Exercise } from "../components/Exercise.tsx";
+import { ExerciseListItem } from "../components/ExerciseListItem.tsx";
 import type { WorkoutExercise } from "../shared/types.ts";
 
 type Exercise = {
@@ -123,7 +123,7 @@ export function AddExercisePage() {
 
         <section className="mt-4 space-y-3">
           {filteredExercises.map((exercise) => (
-            <Exercise
+            <ExerciseListItem
               key={exercise.id}
               exercise={exercise}
               onAdd={handleAddExercise}

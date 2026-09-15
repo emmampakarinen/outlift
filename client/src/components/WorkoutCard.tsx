@@ -1,28 +1,37 @@
-import { Clock, Dumbbell } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronRight, Dumbbell } from "lucide-react";
 import type { Workout } from "../shared/types";
+import { useNavigate } from "react-router-dom";
 
-type WorkoutCardProps = Pick<Workout, "id" | "name" | "duration_minutes">;
+type Props = {
+  workout: Workout;
+};
 
-export function WorkoutCard({ id, name, duration_minutes }: WorkoutCardProps) {
+export function WorkoutCard({ workout }: Props) {
+  const navigate = useNavigate();
   return (
-    <Link to={`/workouts/${id}`}>
-      <button className="flex w-full items-center gap-4 rounded-3xl border border-slate-200 bg-white p-4 text-left shadow-sm transition active:scale-[0.99]">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-900">
-          <Dumbbell size={24} strokeWidth={1.8} />
-        </div>
+    <button
+      onClick={() => navigate(`/workouts/${workout.id}`)}
+      className="flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:bg-slate-50"
+    >
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#1a4332]">
+        <Dumbbell size={22} />
+      </div>
 
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-base font-bold text-slate-900">
-            {name}
-          </h3>
-        </div>
+      <div className="min-w-0 flex-1">
+        <h2 className="truncate font-semibold text-slate-900">
+          {workout.name}
+        </h2>
 
-        <div className="flex shrink-0 items-center gap-1 text-sm text-slate-400">
-          <Clock size={16} />
-          <span>{duration_minutes}</span>
-        </div>
-      </button>
-    </Link>
+        <p className="mt-1 truncate text-sm text-slate-500">
+          {workout.description || "No description"}
+        </p>
+
+        <p className="mt-2 text-xs text-slate-400">
+          {workout.duration_minutes} min
+        </p>
+      </div>
+
+      <ChevronRight size={20} className="shrink-0 text-slate-300" />
+    </button>
   );
 }
