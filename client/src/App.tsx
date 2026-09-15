@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
 import { AppLayout } from "./layouts/AppLayout";
 import { HomePage } from "./pages/HomePage";
-import WorkoutsPage from "./pages/WorkoutsPage";
 import LibraryPage from "./pages/LibraryPage";
 import ProfilePage from "./pages/ProfilePage";
 import { LocationPage } from "./pages/LocationPage";
 import { WorkoutPage } from "./pages/WorkoutPage";
 import { EditWorkoutPage } from "./pages/EditWorkoutPage";
 import { AddExercisePage } from "./pages/AddExercisePage";
+import { LocationsPage } from "./pages/LocationsPage";
 //import { WorkoutsPage } from "./pages/WorkoutsPage";
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/workouts" element={<WorkoutsPage />} />
+        <Route path="/locations" element={<LocationsPage />} />
         <Route path="/library" element={<LibraryPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
