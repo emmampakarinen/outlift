@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getExercises } from "../api/exercises.ts";
 import { ExerciseCategory } from "../components/ExerciseCategory.tsx";
 import { Exercise } from "../components/Exercise.tsx";
+import type { WorkoutExercise } from "../shared/types.ts";
 
 type Exercise = {
   id: number;
@@ -19,6 +20,10 @@ export function AddExercisePage() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const location = useLocation();
+
+  const editedExercises = location.state?.editedExercises ?? [];
 
   useEffect(() => {
     getExercises().then(setExercises);
@@ -46,14 +51,46 @@ export function AddExercisePage() {
   }, [exercises]);
 
   function handleAddExercise(exercise: Exercise) {
-    console.log("add exercise to workout:", workoutId, exercise);
+    const alreadyExists = editedExercises.some(
+      (item: WorkoutExercise) => item.exercise_id === exercise.id,
+    );
+
+    const updatedExercises = alreadyExists
+      ? editedExercises
+      : [
+          ...editedExercises,
+          {
+            id: exercise.id,
+            exercise_id: exercise.id,
+            name: exercise.name,
+            category: exercise.category,
+            primary_muscle: exercise.primary_muscle,
+            sets: 1,
+            reps: 0,
+            weight: null,
+          },
+        ];
+
+    navigate(`/workouts/${workoutId}/edit`, {
+      replace: true,
+      state: {
+        editedExercises: updatedExercises,
+      },
+    });
   }
 
   return (
     <main className="min-h-screen bg-[#f8fbf9]">
       <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() =>
+            navigate(`/workouts/${workoutId}/edit`, {
+              replace: true,
+              state: {
+                editedExercises,
+              },
+            })
+          }
           className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-sm"
         >
           <ArrowLeft size={24} />
@@ -87,7 +124,11 @@ export function AddExercisePage() {
 
         <section className="mt-4 space-y-3">
           {filteredExercises.map((exercise) => (
-            <Exercise exercise={exercise} onAdd={handleAddExercise} />
+            <Exercise
+              key={exercise.id}
+              exercise={exercise}
+              onAdd={handleAddExercise}
+            />
           ))}
         </section>
       </div>

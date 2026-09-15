@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
+import { EditExercise } from "../components/EditExercise";
 
 export function EditWorkoutPage() {
   const { workoutId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const [editedExercises, setEditedExercises] = useState<Workout["exercises"]>(
+    () => location.state?.editedExercises ?? [],
+  );
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [name, setName] = useState("");
   const [duration, setDuration] = useState("");
@@ -21,11 +26,38 @@ export function EditWorkoutPage() {
       setName(data.name);
       setDuration(String(data.duration_minutes));
       setDescription(data.description ?? "");
+
+      if (!location.state?.editedExercises) {
+        setEditedExercises(data.exercises);
+      }
     });
-  }, [workoutId]);
+  }, [workoutId, location.state]);
 
   if (!workout) {
     return <main className="p-5">Loading...</main>;
+  }
+
+  function handleExerciseChange(
+    exerciseId: number,
+    field: "sets" | "reps" | "weight",
+    value: number,
+  ) {
+    setEditedExercises((current) =>
+      current.map((exercise) =>
+        exercise.exercise_id === exerciseId
+          ? {
+              ...exercise,
+              [field]: value,
+            }
+          : exercise,
+      ),
+    );
+  }
+
+  function handleExerciseDelete(exerciseId: number) {
+    setEditedExercises((current) =>
+      current.filter((exercise) => exercise.exercise_id !== exerciseId),
+    );
   }
 
   return (
@@ -90,39 +122,30 @@ export function EditWorkoutPage() {
             <h2 className="text-lg font-bold text-slate-900">Exercises</h2>
 
             <span className="text-sm text-slate-400">
-              {workout.exercises.length} total
+              {editedExercises.length} total
             </span>
           </div>
 
           <div className="space-y-3">
-            {workout.exercises.map((exercise) => (
-              <div
-                key={exercise.id}
-                className="rounded-2xl border border-slate-200 bg-white p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold text-slate-900">
-                      {exercise.name}
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                      {exercise.sets} sets · {exercise.reps} reps
-                    </p>
-                  </div>
-
-                  {exercise.weight !== null && (
-                    <span className="text-sm font-medium text-slate-500">
-                      {exercise.weight} kg
-                    </span>
-                  )}
-                </div>
-              </div>
+            {editedExercises.map((exercise) => (
+              <EditExercise
+                key={exercise.exercise_id}
+                exercise={exercise}
+                onChange={handleExerciseChange}
+                onDelete={handleExerciseDelete}
+              />
             ))}
           </div>
 
           <button
-            onClick={() => navigate(`/workouts/${workoutId}/edit/exercises`)}
+            onClick={() =>
+              navigate(`/workouts/${workoutId}/edit/exercises`, {
+                replace: true,
+                state: {
+                  editedExercises,
+                },
+              })
+            }
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-emerald-200 bg-white py-5 font-semibold text-[#1a4332] transition hover:bg-emerald-50"
           >
             <Plus size={20} />
