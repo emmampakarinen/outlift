@@ -287,6 +287,7 @@ workoutRouter.patch("/:id", async (req: Request, res: Response) => {
             weight = COALESCE($3, weight)
           WHERE id = $4
             AND workout_id = $5
+          RETURNING *
           `,
             [
               exercise.sets,
@@ -300,7 +301,8 @@ workoutRouter.patch("/:id", async (req: Request, res: Response) => {
           await client.query(
             `INSERT INTO workout_exercise
               (workout_id, exercise_id, sets, reps, weight)
-            VALUES ($1, $2, $3, $4, $5)`,
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *`,
             [
               workoutId,
               exercise.exercise_id,
@@ -318,7 +320,7 @@ workoutRouter.patch("/:id", async (req: Request, res: Response) => {
     ]);
 
     await client.query("COMMIT");
-
+    console.log("Workout updated successfully:", result.rows[0]);
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Workout not found" });
     }

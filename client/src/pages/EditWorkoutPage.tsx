@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { getWorkoutById } from "../api/workouts";
+import { editWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { EditExercise } from "../components/EditExercise";
 
@@ -35,6 +35,18 @@ export function EditWorkoutPage() {
 
   if (!workout) {
     return <main className="p-5">Loading...</main>;
+  }
+
+  function handleWorkoutSave() {
+    const updatedWorkout = {
+      ...workout,
+      name,
+      duration_minutes: Number(duration),
+      description,
+      exercises: editedExercises,
+    };
+
+    editWorkout(updatedWorkout, updatedWorkout.id);
   }
 
   function handleExerciseChange(
@@ -72,7 +84,10 @@ export function EditWorkoutPage() {
 
         <h1 className="text-xl font-bold text-slate-900">Edit Workout</h1>
 
-        <button className="rounded-full bg-[#1a4332] px-5 py-3 text-sm font-semibold text-white">
+        <button
+          onClick={handleWorkoutSave}
+          className="rounded-full bg-[#1a4332] px-5 py-3 text-sm font-semibold text-white"
+        >
           Save
         </button>
       </header>

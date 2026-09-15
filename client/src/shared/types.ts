@@ -36,3 +36,17 @@ export interface Exercise {
   category: string;
   primary_muscle: string;
 }
+
+export interface UpdateWorkout {
+  name?: string;
+  description?: string;
+  duration_minutes?: number;
+  location_id?: number;
+  exercises?: {
+    id?: number; // workout_exercise row id
+    exercise_id: number; // exercise id
+    sets?: number;
+    reps?: number;
+    weight?: number;
+  }[];
+}

@@ -60,7 +60,6 @@ export function AddExercisePage() {
       : [
           ...editedExercises,
           {
-            id: exercise.id,
             exercise_id: exercise.id,
             name: exercise.name,
             category: exercise.category,
