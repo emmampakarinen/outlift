@@ -1,16 +1,17 @@
 import { ChevronRight, Dumbbell } from "lucide-react";
 import type { Workout } from "../shared/types";
-import { useNavigate } from "react-router-dom";
+import { useAppNavigation } from "../shared/helpers";
 
 type Props = {
   workout: Workout;
 };
 
 export function WorkoutCard({ workout }: Props) {
-  const navigate = useNavigate();
+  const { goTo } = useAppNavigation();
+
   return (
     <button
-      onClick={() => navigate(`/workouts/${workout.id}`)}
+      onClick={() => goTo(`/workouts/${workout.id}`)}
       className="flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:bg-slate-50"
     >
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#1a4332]">

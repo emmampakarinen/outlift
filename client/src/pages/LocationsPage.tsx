@@ -22,7 +22,7 @@ export function LocationsPage() {
 
       <div className="space-y-3">
         {locations.map((location) => (
-          <LocationListItem location={location} />
+          <LocationListItem key={location.id} location={location} />
         ))}
       </div>
     </main>

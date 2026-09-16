@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { Location } from "../shared/types";
 import { getWorkoutsByLocation } from "../api/workouts";
 import { WorkoutCard } from "../components/WorkoutCard";
 import { getLocationById } from "../api/locations";
 import { ArrowLeft } from "lucide-react";
+import { useAppNavigation } from "../shared/helpers";
 
 export function LocationPage() {
   const { locationId } = useParams();
-  const navigate = useNavigate();
+  const { goTo, goBack } = useAppNavigation();
 
   const [location, setLocation] = useState<Location | null>(null);
   const [workouts, setWorkouts] = useState([]);
@@ -24,7 +25,7 @@ export function LocationPage() {
     <main className="px-5 pt-7 pb-8">
       <header className="relative flex items-center justify-center">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBack()}
           className="absolute left-0 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-md transition hover:scale-105"
         >
           <ArrowLeft size={24} strokeWidth={2.2} />
@@ -42,12 +43,15 @@ export function LocationPage() {
 
         <div className="mt-4 space-y-4">
           {workouts.map((workout) => (
-            <WorkoutCard key={workout.id} {...workout} />
+            <WorkoutCard key={workout.id} workout={workout} />
           ))}
         </div>
       </section>
-      <button className="mt-10 w-full rounded-2xl bg-[#1a4332] px-5 py-4 text-base font-semibold text-white transition hover:opacity-90">
-        Start Workout Here
+      <button
+        onClick={() => goTo(`/locations/${locationId}/workouts/new`)}
+        className="mt-10 w-full rounded-2xl bg-[#1a4332] px-5 py-4 text-base font-semibold text-white transition hover:opacity-90"
+      >
+        Add new workout here
       </button>
     </main>
   );

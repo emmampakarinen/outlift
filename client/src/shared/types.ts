@@ -9,7 +9,7 @@ export interface Location {
 }
 
 export interface WorkoutExercise {
-  id: number;
+  id?: number;
   exercise_id: number;
   name: string;
   category: string;
@@ -17,6 +17,13 @@ export interface WorkoutExercise {
   sets: number;
   reps: number;
   weight: number | null;
+}
+
+export interface Exercise {
+  id: number;
+  name: string;
+  category: string;
+  primary_muscle: string;
 }
 
 export interface Workout {
@@ -30,11 +37,21 @@ export interface Workout {
   exercises: WorkoutExercise[];
 }
 
-export interface Exercise {
-  id: number;
+export interface WorkoutDraft {
+  location_id: number;
   name: string;
-  category: string;
-  primary_muscle: string;
+  description: string;
+  duration_minutes: string;
+  exercises: WorkoutExercise[];
+}
+
+export interface CreateWorkout {
+  user_id: number;
+  location_id: number;
+  name: string;
+  description: string;
+  duration_minutes: number;
+  exercises: WorkoutExercise[];
 }
 
 export interface UpdateWorkout {
@@ -42,11 +59,11 @@ export interface UpdateWorkout {
   description?: string;
   duration_minutes?: number;
   location_id?: number;
-  exercises?: {
-    id?: number; // workout_exercise row id
-    exercise_id: number; // exercise id
-    sets?: number;
-    reps?: number;
-    weight?: number;
-  }[];
+  exercises?: WorkoutExercise[];
+}
+
+export interface workoutNavigationState {
+  backTo?: string;
+  rootBackTo?: string;
+  draft?: WorkoutDraft;
 }

@@ -1,29 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getExercises } from "../api/exercises.ts";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getExercises } from "../api/exercises";
 import { ExerciseCategory } from "../components/ExerciseCategory.tsx";
 import { ExerciseListItem } from "../components/ExerciseListItem.tsx";
-import type { WorkoutExercise } from "../shared/types.ts";
-
-type Exercise = {
-  id: number;
-  name: string;
-  category: string;
-  primary_muscle: string;
-};
+import type { Exercise, WorkoutExercise } from "../shared/types.ts";
+import { useAppNavigation } from "../shared/helpers.ts";
 
 export function AddExercisePage() {
-  const { workoutId } = useParams();
   const navigate = useNavigate();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-
   const location = useLocation();
+  const { goBack } = useAppNavigation();
 
-  const editedExercises = location.state?.editedExercises ?? [];
+  const draft = location.state?.draft;
 
   useEffect(() => {
     getExercises().then(setExercises);
@@ -51,14 +44,14 @@ export function AddExercisePage() {
   }, [exercises]);
 
   function handleAddExercise(exercise: Exercise) {
-    const alreadyExists = editedExercises.some(
+    const alreadyExists = draft.exercises.some(
       (item: WorkoutExercise) => item.exercise_id === exercise.id,
     );
 
     const updatedExercises = alreadyExists
-      ? editedExercises
+      ? draft.exercises
       : [
-          ...editedExercises,
+          ...draft.exercises,
           {
             exercise_id: exercise.id,
             name: exercise.name,
@@ -70,26 +63,16 @@ export function AddExercisePage() {
           },
         ];
 
-    navigate(`/workouts/${workoutId}/edit`, {
-      replace: true,
-      state: {
-        editedExercises: updatedExercises,
-      },
-    });
+    const updatedDraft = { ...draft, exercises: updatedExercises };
+
+    goBack({ draft: updatedDraft });
   }
 
   return (
     <main className="min-h-screen bg-[#f8fbf9]">
       <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-6">
         <button
-          onClick={() =>
-            navigate(`/workouts/${workoutId}/edit`, {
-              replace: true,
-              state: {
-                editedExercises,
-              },
-            })
-          }
+          onClick={() => navigate(-1)}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-sm"
         >
           <ArrowLeft size={24} />

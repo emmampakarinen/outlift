@@ -17,7 +17,7 @@ export interface Workout {
 
 export interface CreateWorkout {
   user_id: number;
-  location_id?: number;
+  location_id: number;
   name: string;
   description?: string;
   duration_minutes?: number;

@@ -5,7 +5,7 @@ import { LibraryPage } from "./pages/LibraryPage";
 import ProfilePage from "./pages/ProfilePage";
 import { LocationPage } from "./pages/LocationPage";
 import { WorkoutPage } from "./pages/WorkoutPage";
-import { EditWorkoutPage } from "./pages/EditWorkoutPage";
+import { WorkoutFormPage } from "./pages/WorkoutFormPage";
 import { AddExercisePage } from "./pages/AddExercisePage";
 import { LocationsPage } from "./pages/LocationsPage";
 //import { WorkoutsPage } from "./pages/WorkoutsPage";
@@ -21,11 +21,16 @@ export default function App() {
       </Route>
       <Route path="/locations/:locationId" element={<LocationPage />} />
       <Route path="/workouts/:workoutId" element={<WorkoutPage />} />
-      <Route path="/workouts/:workoutId/edit" element={<EditWorkoutPage />} />
+      <Route path="/workouts/:workoutId/edit" element={<WorkoutFormPage />} />
+      <Route
+        path="/locations/:locationId/workouts/new"
+        element={<WorkoutFormPage />}
+      />
       <Route
         path="/workouts/:workoutId/edit/exercises"
         element={<AddExercisePage />}
       />
+      <Route path="/workouts/new/exercises" element={<AddExercisePage />} />
     </Routes>
   );
 }

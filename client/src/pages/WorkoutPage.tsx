@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Clock3,
@@ -10,10 +10,11 @@ import {
 } from "lucide-react";
 import { getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
+import { useAppNavigation } from "../shared/helpers";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
-  const navigate = useNavigate();
+  const { goTo, goBack } = useAppNavigation();
 
   const [workout, setWorkout] = useState<Workout | null>(null);
 
@@ -40,14 +41,14 @@ export function WorkoutPage() {
     <main className="min-h-screen bg-white px-5 pt-7 pb-8">
       <header className="flex items-center justify-between">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => goBack}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-md"
         >
           <ArrowLeft size={24} strokeWidth={2.2} />
         </button>
 
         <button
-          onClick={() => navigate(`/workouts/${workout.id}/edit`)}
+          onClick={() => goTo(`/workouts/${workout.id}/edit`)}
           className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a4332] shadow-sm transition hover:bg-slate-50"
         >
           <PenBoxIcon size={17} strokeWidth={2} />

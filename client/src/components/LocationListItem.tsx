@@ -1,16 +1,17 @@
 import { ChevronRight, Dumbbell, MapPin } from "lucide-react";
 import type { Location } from "../shared/types";
-import { useNavigate } from "react-router-dom";
+import { useAppNavigation } from "../shared/helpers";
 
 type Props = {
   location: Location;
 };
 
 export function LocationListItem({ location }: Props) {
-  const navigate = useNavigate();
+  const { goTo } = useAppNavigation();
+
   return (
     <button
-      onClick={() => navigate(`/locations/${location.id}`)}
+      onClick={() => goTo(`/locations/${location.id}`)}
       key={location.id}
       className="flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:bg-emerald-50"
     >
