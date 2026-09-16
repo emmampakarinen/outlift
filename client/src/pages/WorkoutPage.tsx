@@ -41,7 +41,7 @@ export function WorkoutPage() {
     <main className="min-h-screen bg-white px-5 pt-7 pb-8">
       <header className="flex items-center justify-between">
         <button
-          onClick={() => goBack}
+          onClick={() => goBack()}
           className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-md"
         >
           <ArrowLeft size={24} strokeWidth={2.2} />

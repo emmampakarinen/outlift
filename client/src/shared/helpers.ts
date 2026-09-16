@@ -5,8 +5,6 @@ export function useAppNavigation() {
   const location = useLocation();
 
   const history: string[] = location.state?.history ?? [];
-  console.log("history:", history);
-
   function goTo(path: string, extraState = {}) {
     navigate(path, {
       state: {
