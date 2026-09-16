@@ -56,8 +56,18 @@ export async function createWorkout(workout: CreateWorkout) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to patch workout");
+    throw new Error("Failed to create workout");
   }
 
   return response.json();
+}
+
+export async function deleteWorkout(workoutId: number) {
+  const response = await fetch(`${API_URL}/workouts/${workoutId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete workout");
+  }
 }

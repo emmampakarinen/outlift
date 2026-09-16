@@ -7,8 +7,9 @@ import {
   Layers3,
   MapPin,
   PenBoxIcon,
+  Trash2,
 } from "lucide-react";
-import { getWorkoutById } from "../api/workouts";
+import { deleteWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
 
@@ -37,6 +38,17 @@ export function WorkoutPage() {
     0,
   );
 
+  async function handleDeleteWorkout() {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${workout.name}"?`,
+    );
+
+    if (!confirmed) return;
+
+    await deleteWorkout(workout.id);
+    goBack();
+  }
+
   return (
     <main className="min-h-screen bg-white px-5 pt-7 pb-8">
       <header className="flex items-center justify-between">
@@ -47,13 +59,22 @@ export function WorkoutPage() {
           <ArrowLeft size={24} strokeWidth={2.2} />
         </button>
 
-        <button
-          onClick={() => goTo(`/workouts/${workout.id}/edit`)}
-          className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a4332] shadow-sm transition hover:bg-slate-50"
-        >
-          <PenBoxIcon size={17} strokeWidth={2} />
-          Edit
-        </button>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => goTo(`/workouts/${workout.id}/edit`)}
+            className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a4332] shadow-sm transition hover:bg-slate-50"
+          >
+            <PenBoxIcon size={17} strokeWidth={2} />
+            Edit
+          </button>
+
+          <button
+            onClick={handleDeleteWorkout}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-red-200 bg-white text-red-500 shadow-sm transition hover:bg-red-50"
+          >
+            <Trash2 size={18} strokeWidth={2} />
+          </button>
+        </div>
       </header>
 
       <div className="mt-8">
