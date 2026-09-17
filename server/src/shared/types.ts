@@ -2,8 +2,6 @@ export interface CreateUser {
   email: string;
   password: string;
   username: string;
-  profile_picture_url?: string;
-  profile_description?: string;
 }
 
 export interface User {

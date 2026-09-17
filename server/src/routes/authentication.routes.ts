@@ -44,31 +44,19 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 });
 
 authRouter.post("/register", async (req: Request, res: Response) => {
-  const {
-    email,
-    password,
-    username,
-    profile_picture_url,
-    profile_description,
-  } = req.body as CreateUser;
+  const { email, password, username } = req.body as CreateUser;
 
   try {
     const password_hash = await bcrypt.hash(password, 10);
     const result = await pool.query(
       `INSERT INTO users 
-        (email, password_hash, username, profile_picture_url, profile_description)
+        (email, password_hash, username)
         VALUES
-        ($1, $2, $3, $4, $5)`,
-      [
-        email,
-        password_hash,
-        username,
-        profile_picture_url,
-        profile_description,
-      ],
+        ($1, $2, $3)`,
+      [email, password_hash, username],
     );
 
-    return res.status(201);
+    return res.status(201).json({ message: "Registration succesful" });
   } catch (error) {
     console.error("Failed to register user:", error);
     res.status(500).json("Failed to register user");

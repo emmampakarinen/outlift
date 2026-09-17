@@ -84,3 +84,8 @@ export interface LoginResponse {
   token: string;
   user: User;
 }
+export interface CreateUser {
+  email: string;
+  password: string;
+  username: string;
+}

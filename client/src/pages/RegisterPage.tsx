@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { AuthField } from "../components/AuthField";
 import { C } from "../shared/colors";
+import { registerUser } from "../api/users";
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export function RegisterPage() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (password !== confirmPassword) {
@@ -24,21 +25,19 @@ export function RegisterPage() {
       return;
     }
 
-    console.log({
-      username,
-      email,
-      password,
-    });
+    try {
+      const response = await registerUser({
+        username,
+        email,
+        password,
+      });
 
-    // TODO:
-    //
-    // await registerUser({
-    //   username,
-    //   email,
-    //   password,
-    // });
-    //
-    // navigate("/login");
+      console.log(response.message);
+
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -154,15 +153,6 @@ export function RegisterPage() {
             >
               Log in
             </button>
-          </p>
-
-          <p
-            className="pb-8 text-center text-xs"
-            style={{
-              color: C.textMuted,
-            }}
-          >
-            By registering you agree to our Terms & Privacy Policy
           </p>
         </div>
       </div>

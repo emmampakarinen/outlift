@@ -87,13 +87,6 @@ export function LandingPage() {
               Log In
             </button>
           </div>
-
-          <p
-            className="text-center text-xs"
-            style={{ color: "rgba(255,255,255,0.3)" }}
-          >
-            By continuing you agree to our Terms & Privacy Policy
-          </p>
         </div>
       </div>
     </main>
