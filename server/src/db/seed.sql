@@ -1,4 +1,3 @@
-INSERT INTO users (username) VALUES ('emma');
 
 INSERT INTO
     locations (

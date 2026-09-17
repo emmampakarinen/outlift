@@ -1,3 +1,21 @@
+export interface CreateUser {
+  email: string;
+  password: string;
+  username: string;
+  profile_picture_url?: string;
+  profile_description?: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  password_hash: string;
+  username: string;
+  profile_picture_url?: string;
+  profile_description?: string;
+  created_at: Date;
+}
+
 export interface Location {
   id?: number;
   name: string;

@@ -14,7 +14,7 @@ export function useAppNavigation() {
     });
   }
 
-  function goBack(extraState = {}, fallback = "/") {
+  function goBack(extraState = {}, fallback = "/home") {
     const backTo = history.at(-1) ?? fallback;
     const remainingHistory = history.slice(0, -1);
 

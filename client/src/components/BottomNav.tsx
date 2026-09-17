@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 export function BottomNav() {
   const navItems = [
     {
-      to: "/",
+      to: "/home",
       label: "Home",
       icon: Home,
     },

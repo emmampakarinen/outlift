@@ -67,3 +67,20 @@ export interface workoutNavigationState {
   rootBackTo?: string;
   draft?: WorkoutDraft;
 }
+export interface LoginUser {
+  email: string;
+  password: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  profile_picture_url?: string;
+  profile_description?: string;
+}
+
+export interface LoginResponse {
+  token: string;
+  user: User;
+}

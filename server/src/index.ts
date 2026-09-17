@@ -3,6 +3,8 @@ import locationRouter from "./routes/locations.routes.js";
 import workoutRouter from "./routes/workouts.routes.js";
 import exerciseRouter from "#routes/exercises.routes.js";
 import cors from "cors";
+import userRouter from "#routes/users.routes.js";
+import authRouter from "#routes/authentication.routes.js";
 
 const app: Express = express();
 const port = 3000;
@@ -21,6 +23,8 @@ app.use(
 app.use("/locations", locationRouter);
 app.use("/workouts", workoutRouter);
 app.use("/exercises", exerciseRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
