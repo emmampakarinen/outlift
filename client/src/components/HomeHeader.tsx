@@ -1,17 +1,34 @@
+import { C } from "../shared/colors";
+
 export function HomeHeader() {
   return (
-    <header className="flex items-start justify-between">
+    <header className="flex items-center justify-between">
       <div>
-        <p className="text-sm font-bold uppercase tracking-[0.18em] text-emerald-400">
+        <p
+          className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: C.sage }}
+        >
           Good morning
         </p>
 
-        <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-950">
+        <h1
+          className="text-2xl font-bold"
+          style={{
+            color: C.text,
+            letterSpacing: "-0.5px",
+          }}
+        >
           Outlift
         </h1>
       </div>
 
-      <button className="h-12 w-12 overflow-hidden rounded-full border border-slate-200 bg-slate-100 shadow-sm">
+      <button
+        type="button"
+        className="h-10 w-10 overflow-hidden rounded-full"
+        style={{
+          border: `2px solid ${C.border}`,
+        }}
+      >
         <img
           src="/images/profile.jpg"
           alt="Profile"

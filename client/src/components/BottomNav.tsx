@@ -1,5 +1,6 @@
 import { Home, MapPin, BookOpen, UserRound } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { C } from "../shared/colors";
 
 export function BottomNav() {
   const navItems = [
@@ -26,25 +27,36 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white">
-      <div className="mx-auto grid max-w-md grid-cols-4 px-2 pb-2 pt-3">
+    <nav
+      className="z-50 shrink-0 border-t"
+      style={{
+        background: C.card,
+        borderColor: C.border,
+      }}
+    >
+      <div className="grid grid-cols-4 px-2 pb-5 pt-2.5">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
-            className={({ isActive }) =>
-              `flex flex-col items-center justify-center gap-1 text-xs font-medium transition ${
-                isActive
-                  ? "text-[#1a4332]"
-                  : "text-slate-400 hover:text-slate-600"
-              }`
-            }
+            className="flex flex-col items-center justify-center gap-1 py-1"
           >
             {({ isActive }) => (
               <>
-                <Icon size={21} strokeWidth={isActive ? 2.4 : 2} />
+                <Icon
+                  size={22}
+                  strokeWidth={2}
+                  color={isActive ? C.forest : C.textFaint}
+                />
 
-                <span className={isActive ? "font-semibold" : ""}>{label}</span>
+                <span
+                  className="text-xs font-medium"
+                  style={{
+                    color: isActive ? C.forest : C.textFaint,
+                  }}
+                >
+                  {label}
+                </span>
               </>
             )}
           </NavLink>

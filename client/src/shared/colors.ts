@@ -15,3 +15,26 @@ export const C = {
   textMuted: "#6B7280",
   textFaint: "#9CA3AF",
 };
+
+export const CATEGORY_COLORS = {
+  "Upper Body": {
+    background: "#DBEAFE",
+    text: "#1D4ED8",
+  },
+  Core: {
+    background: "#FEF3C7",
+    text: "#92400E",
+  },
+  "Lower Body": {
+    background: "#D1FAE5",
+    text: "#065F46",
+  },
+  Cardio: {
+    background: "#FCE7F3",
+    text: "#9D174D",
+  },
+  Mobility: {
+    background: "#EDE9FE",
+    text: "#5B21B6",
+  },
+};

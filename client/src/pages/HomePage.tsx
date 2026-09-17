@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { getLocations } from "../api/locations";
+import { getWorkouts } from "../api/workouts";
 import { HomeHeader } from "../components/HomeHeader";
 import { MapPreview } from "../components/MapPreview";
 import { NearbySpotCard } from "../components/NearbySpotCard";
 import { WorkoutCard } from "../components/WorkoutCard";
-import { getWorkouts } from "../api/workouts";
 import type { Location, Workout } from "../shared/types";
-import { getLocations } from "../api/locations";
+import { C } from "../shared/colors";
 
 export function HomePage() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -21,45 +22,62 @@ export function HomePage() {
     getLocations().then(setLocations);
   }, []);
 
-  return (
-    <main className="px-5 pt-7 pb-8">
-      <HomeHeader />
+  const recentlySavedLocations = [...locations]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )
+    .slice(0, 5);
 
-      <section className="mt-8">
+  return (
+    <main className="min-h-full pb-8" style={{ background: C.bg }}>
+      <div className="px-5 pt-7 pb-4">
+        <HomeHeader />
+      </div>
+
+      <section className="mx-4 mb-5">
         <MapPreview locations={locations} onLocationsChange={loadLocations} />
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-slate-900">
-          Recently saved spots
-        </h2>
+      <section className="mb-5">
+        <div className="px-5 mb-3">
+          <h2 className="text-sm font-semibold" style={{ color: C.text }}>
+            Recently Saved Spots
+          </h2>
+        </div>
 
-        <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
-          {[...locations]
-            .sort(
-              (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime(),
-            )
-            .slice(0, 5)
-            .map((location) => (
-              <NearbySpotCard
-                key={location.id}
-                id={location.id}
-                name={location.name}
-                description={location.description}
-              />
-            ))}
+        <div className="no-scrollbar flex gap-3 overflow-x-auto px-5 pb-1">
+          {recentlySavedLocations.map((location) => (
+            <NearbySpotCard
+              key={location.id}
+              id={location.id}
+              name={location.name}
+              description={location.description}
+            />
+          ))}
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-slate-900">Recent Workouts</h2>
+      <section>
+        <div className="px-5 mb-3">
+          <h2 className="text-sm font-semibold" style={{ color: C.text }}>
+            Recent Workouts
+          </h2>
+        </div>
 
-        <div className="mt-4 space-y-3">
-          {workouts.map((workout) => (
-            <WorkoutCard key={workout.id} workout={workout} />
-          ))}
+        <div className="flex flex-col gap-3 px-4">
+          {workouts.slice(0, 3).map((workout) => {
+            const location = locations.find(
+              (location) => location.id === workout.location_id,
+            );
+            return (
+              <WorkoutCard
+                key={workout.id}
+                workout={workout}
+                locationName={location?.name}
+              />
+            );
+          })}
         </div>
       </section>
     </main>

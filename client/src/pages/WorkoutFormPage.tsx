@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+
 import { createWorkout, editWorkout, getWorkoutById } from "../api/workouts";
+
 import type {
   Workout,
   CreateWorkout,
   UpdateWorkout,
   WorkoutDraft,
 } from "../shared/types";
+
 import { EditExercise } from "../components/EditExercise";
 import { useAppNavigation } from "../shared/helpers";
+import { C } from "../shared/colors";
 
 export function WorkoutFormPage() {
   const { locationId, workoutId } = useParams();
@@ -19,6 +23,7 @@ export function WorkoutFormPage() {
   const isCreateMode = !workoutId;
 
   const [workout, setWorkout] = useState<Workout | null>(null);
+
   const [draft, setDraft] = useState<WorkoutDraft>(() => ({
     name: location.state?.draft?.name ?? "",
     duration_minutes: location.state?.draft?.duration_minutes ?? "",
@@ -28,13 +33,11 @@ export function WorkoutFormPage() {
   }));
 
   useEffect(() => {
-    // when creating a new workout, there's no existing workout to fetch
-    if (isCreateMode) {
-      return;
-    }
+    if (isCreateMode) return;
 
     getWorkoutById(Number(workoutId)).then((data) => {
       setWorkout(data);
+
       if (!location.state?.draft) {
         setDraft({
           name: data.name,
@@ -47,9 +50,8 @@ export function WorkoutFormPage() {
     });
   }, [workoutId, isCreateMode, location.state?.draft]);
 
-  // only showing loading when editing an existing workout
   if (!isCreateMode && !workout) {
-    return <main className="p-5">Loading...</main>;
+    return <main className="min-h-dvh" style={{ background: C.bg }} />;
   }
 
   async function handleWorkoutSave() {
@@ -121,110 +123,166 @@ export function WorkoutFormPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fbf9]">
-      <header className="flex items-center justify-between border-b border-slate-200 px-5 py-6">
+    <main className="min-h-dvh" style={{ background: C.bg }}>
+      {/* Header */}
+      <header
+        className="flex items-center justify-between px-4 pt-5 pb-3"
+        style={{
+          borderBottom: `1px solid ${C.border}`,
+          background: C.bg,
+        }}
+      >
         <button
+          type="button"
           onClick={() => goBack()}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-sm"
+          className="flex h-9 w-9 items-center justify-center rounded-full"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            color: C.text,
+          }}
         >
-          <ArrowLeft size={24} />
+          <ArrowLeft size={20} strokeWidth={2.5} />
         </button>
 
-        <h1 className="text-xl font-bold text-slate-900">
+        <h1 className="text-base font-semibold" style={{ color: C.text }}>
           {isCreateMode ? "New Workout" : "Edit Workout"}
         </h1>
 
         <button
+          type="button"
           onClick={handleWorkoutSave}
-          className="rounded-full bg-[#1a4332] px-5 py-3 text-sm font-semibold text-white"
+          className="rounded-full px-4 py-2 text-sm font-semibold"
+          style={{
+            background: C.forest,
+            color: "white",
+          }}
         >
           Save
         </button>
       </header>
 
-      <div className="space-y-7 px-5 py-7">
-        <div>
-          <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-500">
-            Workout name
+      <div className="px-5 py-5">
+        {/* Workout name */}
+        <div className="mb-4">
+          <label
+            className="mb-2 block text-xs font-semibold uppercase tracking-wider"
+            style={{ color: C.textMuted }}
+          >
+            Workout Name
           </label>
 
           <input
             value={draft.name}
-            onChange={(e) =>
+            onChange={(event) =>
               setDraft((current) => ({
                 ...current,
-                name: e.target.value,
+                name: event.target.value,
               }))
             }
-            className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-lg font-semibold text-slate-900 outline-none focus:border-emerald-300"
+            placeholder="Name your workout"
+            className="w-full rounded-2xl px-4 py-3 text-base font-medium outline-none"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.text,
+            }}
           />
         </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-500">
+        {/* Duration */}
+        <div className="mb-4">
+          <label
+            className="mb-2 block text-xs font-semibold uppercase tracking-wider"
+            style={{ color: C.textMuted }}
+          >
             Duration (minutes)
           </label>
 
           <input
             type="number"
+            min={1}
             value={draft.duration_minutes}
-            onChange={(e) =>
+            onChange={(event) =>
               setDraft((current) => ({
                 ...current,
-                duration_minutes: e.target.value,
+                duration_minutes: event.target.value,
               }))
             }
-            className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-lg font-semibold text-slate-900 outline-none focus:border-emerald-300"
+            className="w-full rounded-2xl px-4 py-3 text-base font-medium outline-none"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.text,
+            }}
           />
         </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-bold uppercase tracking-wide text-slate-500">
+        {/* Notes */}
+        <div className="mb-6">
+          <label
+            className="mb-2 block text-xs font-semibold uppercase tracking-wider"
+            style={{ color: C.textMuted }}
+          >
             Notes
           </label>
 
           <textarea
             value={draft.description}
-            onChange={(e) =>
+            onChange={(event) =>
               setDraft((current) => ({
                 ...current,
-                description: e.target.value,
+                description: event.target.value,
               }))
             }
             placeholder="How did the session go?"
-            rows={4}
-            className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-5 py-4 text-base text-slate-900 outline-none focus:border-emerald-300"
+            rows={2}
+            className="w-full resize-none rounded-2xl px-4 py-3 text-sm leading-relaxed outline-none"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.text,
+            }}
           />
         </div>
 
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-900">Exercises</h2>
+        {/* Exercises header */}
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold" style={{ color: C.text }}>
+            Exercises
+          </h2>
 
-            <span className="text-sm text-slate-400">
-              {draft.exercises.length} total
-            </span>
-          </div>
+          <span className="text-xs" style={{ color: C.textFaint }}>
+            {draft.exercises.length} total
+          </span>
+        </div>
 
-          <div className="space-y-3">
-            {draft.exercises.map((exercise) => (
-              <EditExercise
-                key={exercise.exercise_id}
-                exercise={exercise}
-                onChange={handleExerciseChange}
-                onDelete={handleExerciseDelete}
-              />
-            ))}
-          </div>
+        {/* Exercises */}
+        <div className="flex flex-col gap-3">
+          {draft.exercises.map((exercise) => (
+            <EditExercise
+              key={exercise.exercise_id}
+              exercise={exercise}
+              onChange={handleExerciseChange}
+              onDelete={handleExerciseDelete}
+            />
+          ))}
+        </div>
 
-          <button
-            onClick={handleAddExercise}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-emerald-200 bg-white py-5 font-semibold text-[#1a4332] transition hover:bg-emerald-50"
-          >
-            <Plus size={20} />
-            Add Exercise
-          </button>
-        </section>
+        {/* Add exercise */}
+        <button
+          type="button"
+          onClick={handleAddExercise}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-3.5 text-sm font-semibold"
+          style={{
+            background: C.card,
+            borderColor: C.sagePale,
+            color: C.forest,
+          }}
+        >
+          <Plus size={16} />
+          Add Exercise
+        </button>
       </div>
     </main>
   );

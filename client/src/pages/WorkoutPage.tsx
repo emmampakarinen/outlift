@@ -6,12 +6,14 @@ import {
   Dumbbell,
   Layers3,
   MapPin,
-  PenBoxIcon,
+  Pencil,
   Trash2,
 } from "lucide-react";
+
 import { deleteWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
+import { C, CATEGORY_COLORS } from "../shared/colors";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
@@ -27,8 +29,10 @@ export function WorkoutPage() {
 
   if (!workout) {
     return (
-      <main className="px-5 pt-7">
-        <p className="text-slate-500">Loading workout...</p>
+      <main className="min-h-screen px-5 pt-7" style={{ background: C.bg }}>
+        <p className="text-sm" style={{ color: C.textMuted }}>
+          Loading workout...
+        </p>
       </main>
     );
   }
@@ -50,121 +54,228 @@ export function WorkoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white px-5 pt-7 pb-8">
+    <main className="min-h-screen px-5 pt-7 pb-8" style={{ background: C.bg }}>
+      {/* Header */}
       <header className="flex items-center justify-between">
         <button
+          type="button"
           onClick={() => goBack()}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-md"
+          className="flex h-9 w-9 items-center justify-center rounded-full"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            color: C.text,
+          }}
         >
-          <ArrowLeft size={24} strokeWidth={2.2} />
+          <ArrowLeft size={20} strokeWidth={2.5} />
         </button>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => goTo(`/workouts/${workout.id}/edit`)}
-            className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-[#1a4332] shadow-sm transition hover:bg-slate-50"
+            className="flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.forest,
+            }}
           >
-            <PenBoxIcon size={17} strokeWidth={2} />
+            <Pencil size={13} />
             Edit
           </button>
 
           <button
+            type="button"
             onClick={handleDeleteWorkout}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-red-200 bg-white text-red-500 shadow-sm transition hover:bg-red-50"
+            className="flex h-8 w-8 items-center justify-center rounded-full"
+            style={{
+              background: "#FEF2F2",
+              color: "#EF4444",
+            }}
           >
-            <Trash2 size={18} strokeWidth={2} />
+            <Trash2 size={14} />
           </button>
         </div>
       </header>
 
-      <div className="mt-8">
-        <h2 className="text-3xl font-bold text-slate-900">{workout.name}</h2>
+      {/* Workout info */}
+      <section className="mt-6">
+        <h1
+          className="mb-1 text-2xl font-bold"
+          style={{
+            color: C.text,
+            letterSpacing: "-0.5px",
+          }}
+        >
+          {workout.name}
+        </h1>
 
-        <div className="mt-2 flex items-center gap-2 text-sm text-slate-500">
-          <MapPin size={16} />
-          <span>Location #{workout.location_id ?? "-"}</span>
-          <span>·</span>
-          <span>{new Date(workout.created_at).toLocaleDateString()}</span>
-        </div>
-      </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <MapPin size={12} style={{ color: C.textFaint }} />
 
-      <section className="mt-8 grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
-          <Clock3 className="mx-auto text-emerald-400" size={24} />
-          <p className="mt-2 text-2xl font-bold text-slate-900">
-            {workout.duration_minutes}m
-          </p>
-          <p className="mt-1 text-sm text-slate-500">Duration</p>
-        </div>
+          <span className="text-sm" style={{ color: C.textMuted }}>
+            {workout.location_id
+              ? `Location #${workout.location_id}`
+              : "No location"}
+          </span>
 
-        <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
-          <Dumbbell className="mx-auto text-emerald-400" size={24} />
-          <p className="mt-2 text-2xl font-bold text-slate-900">
-            {workout.exercises.length}
-          </p>
-          <p className="mt-1 text-sm text-slate-500">Exercises</p>
-        </div>
+          <span style={{ color: "#D1D5DB" }}>·</span>
 
-        <div className="rounded-2xl border border-emerald-100 bg-white p-4 text-center shadow-sm">
-          <Layers3 className="mx-auto text-emerald-400" size={24} />
-          <p className="mt-2 text-2xl font-bold text-slate-900">{totalSets}</p>
-          <p className="mt-1 text-sm text-slate-500">Total Sets</p>
+          <span className="text-sm" style={{ color: C.textMuted }}>
+            {new Date(workout.created_at).toLocaleDateString()}
+          </span>
         </div>
       </section>
 
+      {/* Stats */}
+      <section className="mt-5 grid grid-cols-3 gap-3">
+        <StatCard
+          label="Duration"
+          value={`${workout.duration_minutes}m`}
+          icon={<Clock3 size={16} />}
+        />
+
+        <StatCard
+          label="Exercises"
+          value={workout.exercises.length}
+          icon={<Dumbbell size={16} />}
+        />
+
+        <StatCard
+          label="Total Sets"
+          value={totalSets}
+          icon={<Layers3 size={16} />}
+        />
+      </section>
+
+      {/* Description */}
       {workout.description && (
-        <p className="mt-8 text-slate-600">{workout.description}</p>
+        <section
+          className="mt-6 rounded-2xl p-4"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+          }}
+        >
+          <p className="text-sm leading-relaxed" style={{ color: C.textSub }}>
+            {workout.description}
+          </p>
+        </section>
       )}
 
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-slate-900">Exercises</h2>
+      {/* Exercises */}
+      <section className="mt-6">
+        <h2 className="mb-3 text-sm font-semibold" style={{ color: C.text }}>
+          Exercises
+        </h2>
 
-        <div className="mt-4 space-y-4">
-          {workout.exercises.map((exercise) => (
-            <article
-              key={exercise.id}
-              className="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900">
+        <div className="flex flex-col gap-3">
+          {workout.exercises.map((exercise) => {
+            const categoryColors = CATEGORY_COLORS[exercise.category] ?? {
+              background: C.muted,
+              text: C.textSub,
+            };
+
+            return (
+              <article
+                key={exercise.id}
+                className="rounded-2xl p-4"
+                style={{
+                  background: C.card,
+                  border: `1px solid ${C.border}`,
+                }}
+              >
+                {/* Exercise header */}
+                <div className="flex items-center justify-between gap-3">
+                  <h3
+                    className="text-sm font-semibold"
+                    style={{ color: C.text }}
+                  >
                     {exercise.name}
                   </h3>
+
+                  <span
+                    className="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
+                    style={{
+                      background: categoryColors.background,
+                      color: categoryColors.text,
+                    }}
+                  >
+                    {exercise.category}
+                  </span>
                 </div>
 
-                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-[#1a4332]">
-                  {exercise.category}
-                </span>
-              </div>
+                {/* Exercise stats */}
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  <ExerciseValue label="Sets" value={exercise.sets} />
 
-              <div className="mt-5 flex gap-8">
-                <div>
-                  <p className="text-xs font-medium text-slate-400">Sets</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    {exercise.sets}
-                  </p>
+                  <ExerciseValue label="Reps" value={exercise.reps} />
+
+                  <ExerciseValue
+                    label="Weight"
+                    value={
+                      exercise.weight !== null ? `${exercise.weight} kg` : "–"
+                    }
+                  />
                 </div>
-
-                <div>
-                  <p className="text-xs font-medium text-slate-400">Reps</p>
-                  <p className="mt-1 text-base font-semibold text-slate-900">
-                    {exercise.reps}
-                  </p>
-                </div>
-
-                {exercise.weight !== null && (
-                  <div>
-                    <p className="text-xs font-medium text-slate-400">Weight</p>
-                    <p className="mt-1 text-base font-semibold text-slate-900">
-                      {exercise.weight} kg
-                    </p>
-                  </div>
-                )}
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
     </main>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div
+      className="rounded-2xl p-3.5 text-center"
+      style={{
+        background: C.card,
+        border: `1px solid ${C.border}`,
+      }}
+    >
+      <div className="mb-1 flex justify-center" style={{ color: C.sage }}>
+        {icon}
+      </div>
+
+      <p className="text-lg font-bold" style={{ color: C.text }}>
+        {value}
+      </p>
+
+      <p className="text-xs" style={{ color: C.textMuted }}>
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function ExerciseValue({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-medium" style={{ color: C.textFaint }}>
+        {label}
+      </p>
+
+      <p className="mt-1 text-sm font-semibold" style={{ color: C.text }}>
+        {value}
+      </p>
+    </div>
   );
 }

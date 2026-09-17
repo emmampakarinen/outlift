@@ -1,3 +1,5 @@
+import { C } from "../shared/colors";
+
 type Props = {
   category: string;
   isSelected: boolean;
@@ -11,13 +13,14 @@ export function ExerciseCategory({
 }: Props) {
   return (
     <button
-      key={category}
+      type="button"
       onClick={() => setSelectedCategory(category)}
-      className={`whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition ${
-        isSelected
-          ? "bg-[#1a4332] text-white"
-          : "border border-slate-200 bg-white text-slate-500"
-      }`}
+      className="shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold"
+      style={{
+        background: isSelected ? C.forest : C.card,
+        color: isSelected ? "white" : C.textMuted,
+        border: `1px solid ${isSelected ? C.forest : C.border}`,
+      }}
     >
       {category}
     </button>

@@ -1,42 +1,69 @@
-import { Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import type { Exercise } from "../shared/types";
+import { C, CATEGORY_COLORS } from "../shared/colors";
 
 type Props = {
   exercise: Exercise;
   onAdd?: (exercise: Exercise) => void;
+  isAdded?: boolean;
 };
 
-export function ExerciseListItem({ exercise, onAdd }: Props) {
+export function ExerciseListItem({ exercise, onAdd, isAdded = false }: Props) {
+  const categoryColors = CATEGORY_COLORS[exercise.category] ?? {
+    background: C.muted,
+    text: C.textSub,
+  };
+
   return (
-    <article className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="min-w-0">
-        <h2 className="font-bold text-slate-900">{exercise.name}</h2>
-
-        <p className="mt-1 text-sm text-slate-500">{exercise.primary_muscle}</p>
-      </div>
-
-      <div className="ml-4 flex items-center gap-3">
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            exercise.category === "Upper Body"
-              ? "bg-blue-100 text-blue-600"
-              : exercise.category === "Core"
-                ? "bg-amber-100 text-amber-700"
-                : "bg-emerald-100 text-emerald-700"
-          }`}
+    <article
+      className="flex items-center gap-3 rounded-xl p-3.5"
+      style={{
+        background: C.card,
+        border: `1px solid ${isAdded ? C.sagePale : C.border}`,
+        opacity: isAdded ? 0.65 : 1,
+      }}
+    >
+      <div className="min-w-0 flex-1">
+        <h2
+          className="truncate text-sm font-semibold"
+          style={{ color: C.text }}
         >
-          {exercise.category}
-        </span>
+          {exercise.name}
+        </h2>
 
-        {onAdd && (
-          <button
-            onClick={() => onAdd(exercise)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1a4332] text-white transition hover:opacity-90"
-          >
-            <Plus size={20} />
-          </button>
-        )}
+        <p className="mt-0.5 truncate text-xs" style={{ color: C.textMuted }}>
+          {exercise.primary_muscle}
+        </p>
       </div>
+
+      <span
+        className="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
+        style={{
+          background: categoryColors.background,
+          color: categoryColors.text,
+        }}
+      >
+        {exercise.category}
+      </span>
+
+      {onAdd && (
+        <button
+          type="button"
+          disabled={isAdded}
+          onClick={() => !isAdded && onAdd(exercise)}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+          style={{
+            background: isAdded ? C.sageLight : C.forest,
+            color: isAdded ? C.sage : "white",
+          }}
+        >
+          {isAdded ? (
+            <Check size={13} strokeWidth={3} />
+          ) : (
+            <Plus size={13} strokeWidth={2.5} />
+          )}
+        </button>
+      )}
     </article>
   );
 }

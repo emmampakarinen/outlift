@@ -1,83 +1,122 @@
-import { Trash2Icon } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import type { WorkoutExercise } from "../shared/types";
+import { C } from "../shared/colors";
 
 type Props = {
   exercise: WorkoutExercise;
-  onChange: (id: number, type: string, value: number) => void;
+  onChange: (
+    id: number,
+    type: "sets" | "reps" | "weight",
+    value: number,
+  ) => void;
   onDelete: (id: number) => void;
 };
 
 export function EditExercise({ exercise, onChange, onDelete }: Props) {
   return (
     <div
-      key={`${exercise.exercise_id}-${exercise.id}`}
-      className="rounded-2xl border border-slate-200 bg-white p-4"
+      className="overflow-hidden rounded-2xl"
+      style={{
+        background: C.card,
+        border: `1px solid ${C.border}`,
+      }}
     >
-      <div className="grid grid-cols-[1fr_auto] items-start">
+      {/* Exercise header */}
+      <div
+        className="flex items-center justify-between px-4 pt-4 pb-3"
+        style={{
+          borderBottom: `1px solid ${C.muted}`,
+        }}
+      >
         <div>
-          <h3 className="font-semibold text-slate-900">{exercise.name}</h3>
+          <h3 className="text-sm font-semibold" style={{ color: C.text }}>
+            {exercise.name}
+          </h3>
 
-          <p className="mt-1 text-sm text-slate-500">{exercise.category}</p>
+          <p
+            className="mt-0.5 text-xs font-medium"
+            style={{ color: C.forestMid }}
+          >
+            {exercise.category}
+          </p>
         </div>
 
         <button
-          onClick={() => onDelete(exercise.exercise_id)}
           type="button"
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 text-rose-500 transition hover:bg-rose-100"
+          onClick={() => onDelete(exercise.exercise_id)}
+          className="flex h-8 w-8 items-center justify-center rounded-full"
+          style={{
+            background: "#FEF2F2",
+            color: "#EF4444",
+          }}
         >
-          <Trash2Icon size={20} strokeWidth={2} />
+          <Trash2 size={14} />
         </button>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-slate-400">
+      {/* Values */}
+      <div className="px-4 py-3">
+        <div className="mb-2 grid grid-cols-3 gap-2">
+          <span className="text-xs font-medium" style={{ color: C.textFaint }}>
             Sets
-          </label>
+          </span>
 
-          <input
-            type="number"
-            min="1"
-            value={exercise.sets}
-            onChange={(e) =>
-              onChange(exercise.exercise_id, "sets", Number(e.target.value))
-            }
-            className="w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-300"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-slate-400">
+          <span className="text-xs font-medium" style={{ color: C.textFaint }}>
             Reps
-          </label>
+          </span>
 
-          <input
-            type="number"
-            min="0"
-            value={exercise.reps}
-            onChange={(e) =>
-              onChange(exercise.exercise_id, "reps", Number(e.target.value))
-            }
-            className="w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-300"
-          />
+          <span className="text-xs font-medium" style={{ color: C.textFaint }}>
+            Weight (kg)
+          </span>
         </div>
 
-        <div>
-          <label className="mb-1 block text-xs font-semibold text-slate-400">
-            Weight (kg)
-          </label>
+        <div className="grid grid-cols-3 gap-2">
+          <ExerciseNumberInput
+            value={exercise.sets}
+            min={1}
+            onChange={(value) => onChange(exercise.exercise_id, "sets", value)}
+          />
 
-          <input
-            type="number"
-            min="0"
+          <ExerciseNumberInput
+            value={exercise.reps}
+            min={0}
+            onChange={(value) => onChange(exercise.exercise_id, "reps", value)}
+          />
+
+          <ExerciseNumberInput
             value={exercise.weight ?? 0}
-            onChange={(e) =>
-              onChange(exercise.exercise_id, "weight", Number(e.target.value))
+            min={0}
+            onChange={(value) =>
+              onChange(exercise.exercise_id, "weight", value)
             }
-            className="w-full rounded-xl border border-slate-200 px-3 py-2 outline-none focus:border-emerald-300"
           />
         </div>
       </div>
     </div>
+  );
+}
+
+function ExerciseNumberInput({
+  value,
+  min,
+  onChange,
+}: {
+  value: number;
+  min: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <input
+      type="number"
+      min={min}
+      value={value}
+      onChange={(event) => onChange(Number(event.target.value))}
+      className="h-9 w-full rounded-lg px-2 text-center text-sm font-medium outline-none"
+      style={{
+        background: C.bg,
+        border: `1px solid ${C.border}`,
+        color: C.text,
+      }}
+    />
   );
 }

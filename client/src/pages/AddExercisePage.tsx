@@ -1,20 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { getExercises } from "../api/exercises";
-import { ExerciseCategory } from "../components/ExerciseCategory.tsx";
-import { ExerciseListItem } from "../components/ExerciseListItem.tsx";
-import type { Exercise, WorkoutExercise } from "../shared/types.ts";
-import { useAppNavigation } from "../shared/helpers.ts";
+import { ExerciseCategory } from "../components/ExerciseCategory";
+import { ExerciseListItem } from "../components/ExerciseListItem";
+
+import type { Exercise, WorkoutExercise } from "../shared/types";
+
+import { C } from "../shared/colors";
+import { useAppNavigation } from "../shared/helpers";
 
 export function AddExercisePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { goBack } = useAppNavigation();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const location = useLocation();
-  const { goBack } = useAppNavigation();
 
   const draft = location.state?.draft;
 
@@ -43,6 +47,11 @@ export function AddExercisePage() {
     return ["All", ...uniqueCategories];
   }, [exercises]);
 
+  const addedExerciseIds = new Set(
+    draft?.exercises.map((exercise: WorkoutExercise) => exercise.exercise_id) ??
+      [],
+  );
+
   function handleAddExercise(exercise: Exercise) {
     const alreadyExists = draft.exercises.some(
       (item: WorkoutExercise) => item.exercise_id === exercise.id,
@@ -63,57 +72,88 @@ export function AddExercisePage() {
           },
         ];
 
-    const updatedDraft = { ...draft, exercises: updatedExercises };
+    const updatedDraft = {
+      ...draft,
+      exercises: updatedExercises,
+    };
 
     goBack({ draft: updatedDraft });
   }
 
   return (
-    <main className="min-h-screen bg-[#f8fbf9]">
-      <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-6">
+    <main className="min-h-dvh" style={{ background: C.bg }}>
+      {/* Header */}
+      <header
+        className="flex items-center gap-3 px-4 pt-5 pb-4"
+        style={{
+          borderBottom: `1px solid ${C.border}`,
+          background: C.bg,
+        }}
+      >
         <button
+          type="button"
           onClick={() => navigate(-1)}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#1a4332] shadow-sm"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+          style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            color: C.text,
+          }}
         >
-          <ArrowLeft size={24} />
+          <ArrowLeft size={20} strokeWidth={2.5} />
         </button>
 
-        <h1 className="text-xl font-bold text-slate-900">Add Exercise</h1>
+        <h1 className="text-base font-semibold" style={{ color: C.text }}>
+          Add Exercise
+        </h1>
       </header>
 
-      <div className="px-5 py-6">
-        <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm">
-          <Search size={20} className="text-slate-400" />
+      {/* Search */}
+      <div className="px-4 pt-4 pb-3">
+        <div className="relative">
+          <Search
+            size={15}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2"
+            style={{ color: C.textFaint }}
+          />
 
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             placeholder="Search exercises..."
-            className="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
+            className="w-full rounded-2xl py-3 pr-4 pl-10 text-sm outline-none"
+            style={{
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              color: C.text,
+            }}
           />
         </div>
-
-        <div className="mt-4 flex gap-3 overflow-x-auto pb-2">
-          {categories.map((category) => (
-            <ExerciseCategory
-              key={category}
-              category={category}
-              isSelected={selectedCategory === category}
-              setSelectedCategory={setSelectedCategory}
-            />
-          ))}
-        </div>
-
-        <section className="mt-4 space-y-3">
-          {filteredExercises.map((exercise) => (
-            <ExerciseListItem
-              key={exercise.id}
-              exercise={exercise}
-              onAdd={handleAddExercise}
-            />
-          ))}
-        </section>
       </div>
+
+      {/* Categories */}
+      <div className="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-3">
+        {categories.map((category) => (
+          <ExerciseCategory
+            key={category}
+            category={category}
+            isSelected={selectedCategory === category}
+            setSelectedCategory={setSelectedCategory}
+          />
+        ))}
+      </div>
+
+      {/* Exercise list */}
+      <section className="flex flex-col gap-2.5 px-4 pb-6">
+        {filteredExercises.map((exercise) => (
+          <ExerciseListItem
+            key={exercise.id}
+            exercise={exercise}
+            onAdd={handleAddExercise}
+            isAdded={addedExerciseIds.has(exercise.id)}
+          />
+        ))}
+      </section>
     </main>
   );
 }
