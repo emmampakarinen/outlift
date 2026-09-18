@@ -14,11 +14,13 @@ import type {
 import { EditExercise } from "../components/EditExercise";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
 
 export function WorkoutFormPage() {
   const { locationId, workoutId } = useParams();
   const location = useLocation();
   const { goTo, goBack } = useAppNavigation();
+  const { token } = useAuth();
 
   const isCreateMode = !workoutId;
 
@@ -35,7 +37,7 @@ export function WorkoutFormPage() {
   useEffect(() => {
     if (isCreateMode) return;
 
-    getWorkoutById(Number(workoutId)).then((data) => {
+    getWorkoutById(Number(workoutId), token).then((data) => {
       setWorkout(data);
 
       if (!location.state?.draft) {
@@ -48,7 +50,7 @@ export function WorkoutFormPage() {
         });
       }
     });
-  }, [workoutId, isCreateMode, location.state?.draft]);
+  }, [workoutId, isCreateMode, location.state?.draft, token]);
 
   if (!isCreateMode && !workout) {
     return <main className="min-h-dvh" style={{ background: C.bg }} />;
@@ -65,7 +67,7 @@ export function WorkoutFormPage() {
         exercises: draft.exercises,
       };
 
-      await createWorkout(newWorkout);
+      await createWorkout(newWorkout, token);
 
       goBack();
       return;
@@ -81,7 +83,7 @@ export function WorkoutFormPage() {
       exercises: draft.exercises,
     };
 
-    await editWorkout(updatedWorkout, workout.id);
+    await editWorkout(updatedWorkout, workout.id, token);
 
     goBack();
   }

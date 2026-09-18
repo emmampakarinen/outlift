@@ -1,43 +1,18 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import type { CreateLocationData, Location } from "../shared/types";
+import { apiRequest } from "./apiRequest";
 
-type CreateLocationData = {
-  name: string;
-  description?: string;
-  latitude: number;
-  longitude: number;
-  created_by: number;
-};
-
-export async function getLocations() {
-  const response = await fetch(`${API_URL}/locations`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch locations");
-  }
-  return response.json();
+export function getLocations(token: string) {
+  return apiRequest<Location[]>("/locations", { token });
 }
 
-export async function createLocation(location: CreateLocationData) {
-  const response = await fetch(`${API_URL}/locations`, {
+export function createLocation(location: CreateLocationData, token: string) {
+  return apiRequest<Location>("/locations", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    token,
     body: JSON.stringify(location),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to create location");
-  }
-
-  return response.json();
 }
 
-export async function getLocationById(id: number) {
-  const response = await fetch(`${API_URL}/locations/${id}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch location");
-  }
-
-  return response.json();
+export function getLocationById(id: number, token: string) {
+  return apiRequest<Location>(`/locations/${id}`, { token });
 }

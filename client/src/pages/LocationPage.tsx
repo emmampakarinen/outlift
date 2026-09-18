@@ -9,10 +9,12 @@ import { WorkoutCard } from "../components/WorkoutCard";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
+import { useAuth } from "../contexts/useContext";
 
 export function LocationPage() {
   const { locationId } = useParams();
   const { goTo, goBack } = useAppNavigation();
+  const { token } = useAuth();
 
   const [location, setLocation] = useState<Location | null>(null);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -20,9 +22,9 @@ export function LocationPage() {
   useEffect(() => {
     if (!locationId) return;
 
-    getLocationById(Number(locationId)).then(setLocation);
-    getWorkoutsByLocation(Number(locationId)).then(setWorkouts);
-  }, [locationId]);
+    getLocationById(Number(locationId), token).then(setLocation);
+    getWorkoutsByLocation(Number(locationId), token).then(setWorkouts);
+  }, [locationId, token]);
 
   if (!location) {
     return <main className="min-h-full" style={{ background: C.bg }} />;

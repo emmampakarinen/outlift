@@ -89,3 +89,10 @@ export interface CreateUser {
   password: string;
   username: string;
 }
+
+export type CreateLocationData = {
+  name: string;
+  description?: string;
+  latitude: number;
+  longitude: number;
+};

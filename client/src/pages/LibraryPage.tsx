@@ -7,11 +7,13 @@ import { ExerciseListItem } from "../components/ExerciseListItem";
 import { WorkoutCard } from "../components/WorkoutCard";
 import type { Exercise, Workout } from "../shared/types";
 import { C } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
 
 export function LibraryPage() {
   const [activeTab, setActiveTab] = useState<"workouts" | "exercises">(
     "workouts",
   );
+  const { token } = useAuth();
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
@@ -20,9 +22,11 @@ export function LibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
+    if (!token) return;
+
     getExercises().then(setExercises);
-    getWorkouts().then(setWorkouts);
-  }, []);
+    getWorkouts(token).then(setWorkouts);
+  }, [token]);
 
   const categories = useMemo(() => {
     const exerciseCategories = exercises.map((exercise) => exercise.category);

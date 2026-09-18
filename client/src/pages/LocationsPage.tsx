@@ -4,14 +4,16 @@ import { getLocations } from "../api/locations";
 import { LocationListItem } from "../components/LocationListItem";
 import type { Location } from "../shared/types";
 import { C } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
 
 export function LocationsPage() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [search, setSearch] = useState("");
+  const { token } = useAuth();
 
   useEffect(() => {
-    getLocations().then(setLocations);
-  }, []);
+    getLocations(token).then(setLocations);
+  }, [token]);
 
   const filteredLocations = useMemo(() => {
     return locations.filter((location) =>

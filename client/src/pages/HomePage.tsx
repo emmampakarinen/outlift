@@ -7,20 +7,24 @@ import { NearbySpotCard } from "../components/NearbySpotCard";
 import { WorkoutCard } from "../components/WorkoutCard";
 import type { Location, Workout } from "../shared/types";
 import { C } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
 
 export function HomePage() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
+  const { token } = useAuth();
 
   async function loadLocations() {
-    const data = await getLocations();
+    const data = await getLocations(token);
     setLocations(data);
   }
 
   useEffect(() => {
-    getWorkouts().then(setWorkouts);
-    getLocations().then(setLocations);
-  }, []);
+    if (!token) return;
+
+    getWorkouts(token).then(setWorkouts);
+    getLocations(token).then(setLocations);
+  }, [token]);
 
   const recentlySavedLocations = [...locations]
     .sort(

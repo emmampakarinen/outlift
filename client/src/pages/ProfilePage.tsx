@@ -8,14 +8,16 @@ import type { Workout } from "../shared/types";
 import { C } from "../shared/colors";
 
 function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const navigate = useNavigate();
 
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
   useEffect(() => {
-    getWorkouts().then(setWorkouts);
-  }, []);
+    if (!token) return;
+
+    getWorkouts(token).then(setWorkouts);
+  }, [token]);
 
   const stats = useMemo(() => {
     const totalMinutes = workouts.reduce(

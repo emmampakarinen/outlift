@@ -14,18 +14,20 @@ import { deleteWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
 import { C, CATEGORY_COLORS } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
   const { goTo, goBack } = useAppNavigation();
+  const { token } = useAuth();
 
   const [workout, setWorkout] = useState<Workout | null>(null);
 
   useEffect(() => {
     if (!workoutId) return;
 
-    getWorkoutById(Number(workoutId)).then(setWorkout);
-  }, [workoutId]);
+    getWorkoutById(Number(workoutId), token).then(setWorkout);
+  }, [workoutId, token]);
 
   if (!workout) {
     return (
@@ -49,7 +51,7 @@ export function WorkoutPage() {
 
     if (!confirmed) return;
 
-    await deleteWorkout(workout.id);
+    await deleteWorkout(workout.id, token);
     goBack();
   }
 

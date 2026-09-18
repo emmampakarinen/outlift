@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createLocation } from "../api/locations";
 import type { Location } from "../shared/types";
 import { LocationForm } from "./LocationForm";
+import { useAuth } from "../contexts/useContext";
 
 type Position = {
   lat: number;
@@ -19,6 +20,7 @@ export function AddLocationModal({ locations, onClose, onCreated }: Props) {
   const [selectedPosition, setSelectedPosition] = useState<Position | null>(
     null,
   );
+  const { token } = useAuth();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,13 +33,15 @@ export function AddLocationModal({ locations, onClose, onCreated }: Props) {
   async function handleSave() {
     if (!selectedPosition || !name.trim()) return;
 
-    await createLocation({
-      name,
-      description,
-      latitude: selectedPosition.lat,
-      longitude: selectedPosition.lng,
-      created_by: 1, // TODO: Replace with actual user ID when authentication is implemented
-    });
+    await createLocation(
+      {
+        name,
+        description,
+        latitude: selectedPosition.lat,
+        longitude: selectedPosition.lng,
+      },
+      token,
+    );
 
     await onCreated();
     onClose();
