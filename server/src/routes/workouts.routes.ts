@@ -22,10 +22,6 @@ workoutRouter.get(
         [userId],
       );
 
-      if (workoutResult.rows.length === 0) {
-        return res.status(404).json({ error: "No workouts found" });
-      }
-
       const workoutsWithExercises = [];
 
       for (const workout of workoutResult.rows) {

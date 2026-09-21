@@ -51,14 +51,20 @@ export function HomePage() {
         </div>
 
         <div className="no-scrollbar flex gap-3 overflow-x-auto px-5 pb-1">
-          {recentlySavedLocations.map((location) => (
-            <NearbySpotCard
-              key={location.id}
-              id={location.id}
-              name={location.name}
-              description={location.description}
-            />
-          ))}
+          {recentlySavedLocations.length > 0 ? (
+            recentlySavedLocations.map((location) => (
+              <NearbySpotCard
+                key={location.id}
+                id={location.id}
+                name={location.name}
+                description={location.description}
+              />
+            ))
+          ) : (
+            <p className="text-sm" style={{ color: C.textFaint }}>
+              Add a location to start creating workouts.
+            </p>
+          )}
         </div>
       </section>
 
@@ -70,18 +76,25 @@ export function HomePage() {
         </div>
 
         <div className="flex flex-col gap-3 px-4">
-          {workouts.slice(0, 3).map((workout) => {
-            const location = locations.find(
-              (location) => location.id === workout.location_id,
-            );
-            return (
-              <WorkoutCard
-                key={workout.id}
-                workout={workout}
-                locationName={location?.name}
-              />
-            );
-          })}
+          {workouts.length > 0 ? (
+            workouts.slice(0, 3).map((workout) => {
+              const location = locations.find(
+                (location) => location.id === workout.location_id,
+              );
+
+              return (
+                <WorkoutCard
+                  key={workout.id}
+                  workout={workout}
+                  locationName={location?.name}
+                />
+              );
+            })
+          ) : (
+            <p className="text-sm" style={{ color: C.textFaint }}>
+              No workouts yet. Add a location and create your first workout.
+            </p>
+          )}
         </div>
       </section>
     </main>

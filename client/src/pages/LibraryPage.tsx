@@ -166,11 +166,23 @@ export function LibraryPage() {
       {/* Content */}
       <div className="px-5 pb-6">
         {activeTab === "workouts" ? (
-          <div className="flex flex-col gap-3">
-            {filteredWorkouts.map((workout) => (
-              <WorkoutCard key={workout.id} workout={workout} />
-            ))}
-          </div>
+          filteredWorkouts.length === 0 ? (
+            <div className="py-10 text-center">
+              <p className="text-sm font-semibold" style={{ color: C.text }}>
+                No workouts yet
+              </p>
+
+              <p className="mt-1 text-sm" style={{ color: C.textMuted }}>
+                Add a location to start creating workouts.
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {filteredWorkouts.map((workout) => (
+                <WorkoutCard key={workout.id} workout={workout} />
+              ))}
+            </div>
+          )
         ) : (
           <div className="flex flex-col gap-2.5">
             {filteredExercises.map((exercise) => (
