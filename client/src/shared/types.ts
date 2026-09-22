@@ -120,3 +120,8 @@ export interface Equipment {
   created_by: number | null;
   is_default: boolean;
 }
+
+export interface LocationEquipment {
+  id: number;
+  name: string;
+}

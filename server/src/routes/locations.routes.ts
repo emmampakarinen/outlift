@@ -192,46 +192,4 @@ locationRouter.get(
   },
 );
 
-// add equipment to location
-locationRouter.post(
-  "/:id/equipment",
-  authenticateToken,
-  async (req: AuthRequest, res: Response) => {
-    const equipmentIds = req.body.equipmentIds;
-    const locationId = req.params.id;
-    const userId = req.user?.id;
-
-    try {
-      // first make sure the location belongs to this user
-      const location = await pool.query(
-        `SELECT id
-         FROM locations
-         WHERE id = $1
-           AND created_by = $2`,
-        [locationId, userId],
-      );
-
-      if (location.rowCount === 0) {
-        return res.status(404).json({ error: "Location not found" });
-      }
-
-      await pool.query(
-        `INSERT INTO location_equipment
-          (location_id, equipment_id)
-         SELECT $1, UNNEST($2::int[])`,
-        [locationId, equipmentIds],
-      );
-
-      return res.status(201).json({
-        message: "Equipment added to location",
-      });
-    } catch (error) {
-      console.error("Failed to add location's equipment:", error);
-      return res
-        .status(500)
-        .json({ error: "Failed to add location's equipment" });
-    }
-  },
-);
-
 export default locationRouter;

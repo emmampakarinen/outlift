@@ -1,5 +1,5 @@
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
-import { Check, Map as MapIcon, MapPin, Plus } from "lucide-react";
+import { Map as MapIcon, MapPin, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { createLocation } from "../api/locations";
@@ -12,6 +12,7 @@ import type { Equipment } from "../shared/types";
 import { BackButton } from "../components/BackButton";
 import { ActionButton } from "../components/ActionButton";
 import { InputField } from "../components/InputField";
+import { EquipmentChips } from "../components/EquipmentChips";
 
 type Position = {
   lat: number;
@@ -254,33 +255,13 @@ export function AddLocationPage() {
             Select equipment available at this spot
           </p>
 
-          <div className="mb-4 flex flex-wrap gap-2">
-            {equipment.map((item) => {
-              const selected = selectedEquipment.some(
-                (equipment) => equipment.id === item.id,
-              );
+          <EquipmentChips
+            equipment={equipment}
+            selectedEquipment={selectedEquipment}
+            onToggle={toggleEquipment}
+          />
 
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => toggleEquipment(item)}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold"
-                  style={{
-                    background: selected ? C.sageLight : C.card,
-                    color: selected ? C.forest : C.textMuted,
-                    border: `1.5px solid ${selected ? C.forest : C.border}`,
-                  }}
-                >
-                  {selected && <Check size={11} />}
-
-                  {item.name}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-5">
             <input
               value={customInput}
               onChange={(event) => setCustomInput(event.target.value)}

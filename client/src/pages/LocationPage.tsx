@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { Dumbbell, MapPin } from "lucide-react";
 import { useParams } from "react-router-dom";
 
-import type { Location, Workout } from "../shared/types";
+import type { Location, LocationEquipment, Workout } from "../shared/types";
 import { getWorkoutsByLocation } from "../api/workouts";
-import { deleteLocation, getLocationById } from "../api/locations";
+import {
+  deleteLocation,
+  getLocationById,
+  getLocationEquipment,
+} from "../api/locations";
 import { WorkoutCard } from "../components/WorkoutCard";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
@@ -12,6 +16,7 @@ import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
 import { StatCard } from "../components/StatCard";
+import { EquipmentChips } from "../components/EquipmentChips";
 
 export function LocationPage() {
   const { locationId } = useParams();
@@ -20,12 +25,16 @@ export function LocationPage() {
 
   const [location, setLocation] = useState<Location | null>(null);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [locationEquipment, setLocationEquipment] = useState<
+    LocationEquipment[]
+  >([]);
 
   useEffect(() => {
     if (!locationId) return;
 
     getLocationById(Number(locationId), token).then(setLocation);
     getWorkoutsByLocation(Number(locationId), token).then(setWorkouts);
+    getLocationEquipment(Number(locationId), token).then(setLocationEquipment);
   }, [locationId, token]);
 
   if (!location) {
@@ -119,6 +128,16 @@ export function LocationPage() {
             {location.description}
           </p>
         )}
+
+        <section className="mt-5">
+          <h2
+            className="mb-3 text-xs font-semibold uppercase tracking-wider"
+            style={{ color: C.textMuted }}
+          >
+            Amenities & Equipment
+          </h2>
+          <EquipmentChips equipment={locationEquipment} />
+        </section>
 
         {/* Workouts */}
         {workouts.length > 0 && (
