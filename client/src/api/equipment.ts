@@ -21,3 +21,18 @@ export function createLocationEquipment(
     },
   });
 }
+
+export function editLocationEquipment(
+  equipments: Equipment[],
+  locationId: number,
+  token: string,
+) {
+  return apiRequest<void>(`/equipment/`, {
+    token,
+    method: "PATCH",
+    body: {
+      equipmentIds: equipments.map((equipment) => equipment.id),
+      locationId: locationId,
+    },
+  });
+}

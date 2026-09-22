@@ -128,7 +128,6 @@ locationRouter.delete(
 );
 
 // update location
-// TODO update based on changes to schema
 locationRouter.patch(
   "/:id",
   authenticateToken,

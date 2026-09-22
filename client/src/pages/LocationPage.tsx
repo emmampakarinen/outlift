@@ -197,6 +197,20 @@ export function LocationPage() {
         >
           Create New Workout Here
         </button>
+
+        <button
+          type="button"
+          onClick={() => goTo(`/locations/${locationId}/edit`)}
+          className="mt-3 w-full rounded-2xl py-4 text-sm font-semibold"
+          style={{
+            background: C.card,
+            color: C.forest,
+            border: `1px solid ${C.border}`,
+          }}
+        >
+          Edit Location
+        </button>
+
         <button
           type="button"
           onClick={handleDeleteLocation}

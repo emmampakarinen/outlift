@@ -21,6 +21,7 @@ equipmentRouter.get(
   },
 );
 
+// adding equipment to location after creating new location
 equipmentRouter.post(
   "/",
   authenticateToken,
@@ -55,46 +56,44 @@ equipmentRouter.post(
   },
 );
 
-// TODO delete equipment from location
-equipmentRouter.delete(
-  "/:id/equipment/:equipmentId",
+// route for editing location's equipment
+equipmentRouter.patch(
+  "/",
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
-    const equipmentId = req.params.equipmentId;
-    const locationId = req.params.id;
-    const userId = req.user?.id;
+    const { locationId, equipmentIds } = req.body;
+    const client = await pool.connect();
 
     try {
-      // make sure the location belongs to this user
-      const location = await pool.query(
-        `SELECT id
-         FROM locations
-         WHERE id = $1
-           AND created_by = $2`,
-        [locationId, userId],
+      await client.query("BEGIN");
+
+      await client.query(
+        "DELETE FROM location_equipment WHERE location_id = $1",
+        [locationId],
       );
 
-      if (location.rowCount === 0) {
-        return res.status(404).json({ error: "Location not found" });
+      for (const id of equipmentIds) {
+        await client.query(
+          "INSERT INTO location_equipment (location_id, equipment_id) VALUES ($1, $2)",
+          [locationId, id],
+        );
       }
 
-      const result = await pool.query(
-        `DELETE FROM location_equipment
-         WHERE location_id = $1
-           AND equipment_id = $2`,
-        [locationId, equipmentId],
-      );
+      await client.query("COMMIT");
 
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: "Equipment not found" });
-      }
-
-      return res.status(204).send();
-    } catch (error) {
-      console.error("Failed to delete location's equipment:", error);
       return res
-        .status(500)
-        .json({ error: "Failed to delete location's equipment" });
+        .status(201)
+        .json({ message: "Equipments patched to location" });
+    } catch (error) {
+      await client.query("ROLLBACK");
+
+      console.error("Failed to patch equipments:", error);
+
+      return res.status(500).json({
+        error: "Failed to patch equipments",
+      });
+    } finally {
+      client.release();
     }
   },
 );

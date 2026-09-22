@@ -27,6 +27,19 @@ export function getLocationEquipment(id: number, token: string) {
   });
 }
 
+export function updateLocation(
+  id: number,
+  name: string,
+  description: string,
+  token: string,
+) {
+  return apiRequest<Location>(`/locations/${id}`, {
+    token,
+    method: "PATCH",
+    body: { name: name, description: description },
+  });
+}
+
 export function deleteLocation(id: number, token: string) {
-  return apiRequest<Location>(`/locations/${id}`, { token, method: "DELETE" });
+  return apiRequest<void>(`/locations/${id}`, { token, method: "DELETE" });
 }
