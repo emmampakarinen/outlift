@@ -123,7 +123,7 @@ workoutRouter.get(
       );
 
       if (workoutResult.rows.length === 0) {
-        return res.status(404).json({ error: "Workout not found" });
+        return res.json([]);
       }
 
       const workoutsWithExercises = [];

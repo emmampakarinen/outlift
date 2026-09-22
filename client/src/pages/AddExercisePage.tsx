@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import { getExercises } from "../api/exercises";
 import { ExerciseCategory } from "../components/ExerciseCategory";
@@ -10,9 +10,9 @@ import type { Exercise, WorkoutExercise } from "../shared/types";
 
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
+import { BackButton } from "../components/BackButton";
 
 export function AddExercisePage() {
-  const navigate = useNavigate();
   const location = useLocation();
   const { goBack } = useAppNavigation();
 
@@ -90,18 +90,7 @@ export function AddExercisePage() {
           background: C.bg,
         }}
       >
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
-          style={{
-            background: C.card,
-            border: `1px solid ${C.border}`,
-            color: C.text,
-          }}
-        >
-          <ArrowLeft size={20} strokeWidth={2.5} />
-        </button>
+        <BackButton onNavigateBack={() => goBack()} />
 
         <h1 className="text-base font-semibold" style={{ color: C.text }}>
           Add Exercise

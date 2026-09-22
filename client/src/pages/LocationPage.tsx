@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Dumbbell, MapPin } from "lucide-react";
+import { Dumbbell, MapPin } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 import type { Location, Workout } from "../shared/types";
@@ -10,6 +10,7 @@ import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useAuth } from "../contexts/useContext";
+import { BackButton } from "../components/BackButton";
 
 export function LocationPage() {
   const { locationId } = useParams();
@@ -66,18 +67,7 @@ export function LocationPage() {
           </Map>
         </APIProvider>
 
-        <button
-          type="button"
-          onClick={() => goBack()}
-          className="absolute top-5 left-4 flex h-9 w-9 items-center justify-center rounded-full"
-          style={{
-            background: "rgba(255,255,255,0.92)",
-            color: C.text,
-            boxShadow: "0 1px 6px rgba(0,0,0,0.12)",
-          }}
-        >
-          <ArrowLeft size={20} strokeWidth={2.5} />
-        </button>
+        <BackButton onNavigateBack={() => goBack()} variant="overlay" />
       </div>
 
       <div className="px-5 pt-5 pb-8">
@@ -178,7 +168,7 @@ export function LocationPage() {
             color: "white",
           }}
         >
-          Start Workout Here
+          Create New Workout Here
         </button>
       </div>
     </main>

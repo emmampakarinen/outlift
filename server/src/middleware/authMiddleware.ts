@@ -1,6 +1,6 @@
 import type { AuthRequest } from "#shared/types.js";
 import type { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 
 export function authenticateToken(
   req: AuthRequest,
@@ -14,9 +14,10 @@ export function authenticateToken(
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    const { id, username } = decoded;
 
-    console.log(decoded);
+    req.user = { id, username };
 
     next();
   } catch {

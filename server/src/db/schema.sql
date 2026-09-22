@@ -11,6 +11,8 @@ CREATE TABLE users (
 CREATE TABLE locations (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    address VARCHAR(255),
+    type VARCHAR (100),
     latitude DECIMAL,
     longitude DECIMAL,
     description VARCHAR(255),
@@ -51,8 +53,25 @@ CREATE TABLE workout_exercise (
 
 CREATE TABLE equipment (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+
+    type VARCHAR(50) NOT NULL CHECK (
+        type IN (
+            'bodyweight',
+            'strength',
+            'cardio',
+            'balance',
+            'mobility',
+            'functional',
+            'other'
+        )
+    ),
+
+    created_by INTEGER REFERENCES users(id),
+    is_default BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+CREATE UNIQUE INDEX unique_equipment_name ON equipment (LOWER(name));
 
 CREATE TABLE location_equipment (
     location_id INTEGER NOT NULL REFERENCES locations (id),

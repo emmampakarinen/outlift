@@ -5,6 +5,7 @@ import exerciseRouter from "#routes/exercises.routes.js";
 import cors from "cors";
 import userRouter from "#routes/users.routes.js";
 import authRouter from "#routes/authentication.routes.js";
+import equipmentRouter from "#routes/equipment.routes.js";
 
 const app: Express = express();
 const port = 3000;
@@ -25,6 +26,7 @@ app.use("/workouts", workoutRouter);
 app.use("/exercises", exerciseRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/equipment", equipmentRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

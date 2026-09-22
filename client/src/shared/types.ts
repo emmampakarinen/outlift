@@ -1,11 +1,12 @@
 export interface Location {
   id: number;
   name: string;
-  description: string;
   latitude: number;
   longitude: number;
+  address?: string;
+  description?: string;
   created_by: number;
-  created_at: string;
+  created_at: Date;
 }
 
 export interface WorkoutExercise {
@@ -62,11 +63,6 @@ export interface UpdateWorkout {
   exercises?: WorkoutExercise[];
 }
 
-export interface workoutNavigationState {
-  backTo?: string;
-  rootBackTo?: string;
-  draft?: WorkoutDraft;
-}
 export interface LoginUser {
   email: string;
   password: string;
@@ -90,9 +86,37 @@ export interface CreateUser {
   username: string;
 }
 
-export type CreateLocationData = {
+export interface CreateLocationData {
   name: string;
+  address?: string;
   description?: string;
   latitude: number;
   longitude: number;
-};
+}
+
+export type EquipmentType =
+  | "bodyweight"
+  | "strength"
+  | "cardio"
+  | "balance"
+  | "mobility"
+  | "functional"
+  | "other";
+
+export const EQUIPMENT_TYPES: EquipmentType[] = [
+  "bodyweight",
+  "strength",
+  "cardio",
+  "balance",
+  "mobility",
+  "functional",
+  "other",
+];
+
+export interface Equipment {
+  id: number;
+  name: string;
+  type: EquipmentType;
+  created_by: number | null;
+  is_default: boolean;
+}

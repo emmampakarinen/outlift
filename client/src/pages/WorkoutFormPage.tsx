@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useLocation, useParams } from "react-router-dom";
 
 import { createWorkout, editWorkout, getWorkoutById } from "../api/workouts";
@@ -15,6 +15,7 @@ import { EditExercise } from "../components/EditExercise";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
+import { BackButton } from "../components/BackButton";
 
 export function WorkoutFormPage() {
   const { locationId, workoutId } = useParams();
@@ -134,18 +135,7 @@ export function WorkoutFormPage() {
           background: C.bg,
         }}
       >
-        <button
-          type="button"
-          onClick={() => goBack()}
-          className="flex h-9 w-9 items-center justify-center rounded-full"
-          style={{
-            background: C.card,
-            border: `1px solid ${C.border}`,
-            color: C.text,
-          }}
-        >
-          <ArrowLeft size={20} strokeWidth={2.5} />
-        </button>
+        <BackButton onNavigateBack={() => goBack()} />
 
         <h1 className="text-base font-semibold" style={{ color: C.text }}>
           {isCreateMode ? "New Workout" : "Edit Workout"}

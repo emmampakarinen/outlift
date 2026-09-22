@@ -17,9 +17,12 @@ export interface User {
 
 export interface CreateLocation {
   name: string;
-  description: string;
+  address?: string;
+  type?: string;
+  description?: string;
   latitude: number;
   longitude: number;
+  equipmentIds: number[];
 }
 
 export interface Workout {

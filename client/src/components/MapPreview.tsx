@@ -1,17 +1,15 @@
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { MapPin, Plus } from "lucide-react";
-import { useState } from "react";
 import type { Location } from "../shared/types";
 import { C } from "../shared/colors";
-import { AddLocationModal } from "./AddLocationModal";
+import { useAppNavigation } from "../shared/helpers";
 
 type MapPreviewProps = {
   locations: Location[];
-  onLocationsChange: () => Promise<void>;
 };
 
-export function MapPreview({ locations, onLocationsChange }: MapPreviewProps) {
-  const [isAdding, setIsAdding] = useState(false);
+export function MapPreview({ locations }: MapPreviewProps) {
+  const { goTo } = useAppNavigation();
 
   const center = {
     lat: 60.1699,
@@ -52,7 +50,7 @@ export function MapPreview({ locations, onLocationsChange }: MapPreviewProps) {
 
           <button
             type="button"
-            onClick={() => setIsAdding(true)}
+            onClick={() => goTo("/locations/new")}
             className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition hover:scale-105"
             style={{
               background: C.forest,
@@ -79,14 +77,6 @@ export function MapPreview({ locations, onLocationsChange }: MapPreviewProps) {
           </span>
         </div>
       </div>
-
-      {isAdding && (
-        <AddLocationModal
-          locations={locations}
-          onClose={() => setIsAdding(false)}
-          onCreated={onLocationsChange}
-        />
-      )}
     </>
   );
 }

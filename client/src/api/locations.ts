@@ -9,7 +9,7 @@ export function createLocation(location: CreateLocationData, token: string) {
   return apiRequest<Location>("/locations", {
     method: "POST",
     token,
-    body: JSON.stringify(location),
+    body: location,
   });
 }
 

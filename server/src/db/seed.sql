@@ -390,28 +390,45 @@ VALUES (
         TRUE
     );
 
-INSERT INTO
-    equipment (name)
-VALUES ('Pull-up bar'),
-    ('Dip bars'),
-    ('Parallel bars'),
-    ('Monkey bars'),
-    ('Bench'),
-    ('Sit-up bench'),
-    ('Back extension bench'),
-    ('Leg press'),
-    ('Chest press'),
-    ('Shoulder press'),
-    ('Lat pulldown'),
-    ('Row machine'),
-    ('Air walker'),
-    ('Elliptical trainer'),
-    ('Exercise bike'),
-    ('Stepper'),
-    ('Twist machine'),
-    ('Balance board'),
-    ('Barbell'),
-    ('No equipment');
+INSERT INTO equipment (name, type, is_default)
+VALUES
+    ('Pull-up Bar', 'bodyweight', TRUE),
+    ('Parallel Bars', 'bodyweight', TRUE),
+    ('Dip Bars', 'bodyweight', TRUE),
+    ('Monkey Bars', 'bodyweight', TRUE),
+    ('Swedish Ladder', 'bodyweight', TRUE),
+    ('Sit-up Bench', 'bodyweight', TRUE),
+    ('Push-up Bars', 'bodyweight', TRUE),
+    ('Step Platform', 'bodyweight', TRUE),
+
+    ('Outdoor Chest Press', 'strength', TRUE),
+    ('Outdoor Shoulder Press', 'strength', TRUE),
+    ('Outdoor Lat Pulldown', 'strength', TRUE),
+    ('Outdoor Row Machine', 'strength', TRUE),
+    ('Outdoor Leg Press', 'strength', TRUE),
+    ('Outdoor Squat Machine', 'strength', TRUE),
+    ('Outdoor Leg Extension', 'strength', TRUE),
+    ('Outdoor Leg Curl', 'strength', TRUE),
+    ('Outdoor Biceps Curl', 'strength', TRUE),
+    ('Outdoor Triceps Press', 'strength', TRUE),
+
+    ('Air Walker', 'cardio', TRUE),
+    ('Outdoor Elliptical', 'cardio', TRUE),
+    ('Outdoor Exercise Bike', 'cardio', TRUE),
+    ('Outdoor Stepper', 'cardio', TRUE),
+    ('Ski Walker', 'cardio', TRUE),
+
+    ('Balance Beam', 'balance', TRUE),
+    ('Balance Board', 'balance', TRUE),
+    ('Stretching Station', 'mobility', TRUE),
+    ('Twist Machine', 'mobility', TRUE),
+    ('Back Extension Bench', 'bodyweight', TRUE),
+
+    ('Battle Rope Anchor', 'functional', TRUE),
+    ('Climbing Rope', 'functional', TRUE),
+    ('Climbing Wall', 'functional', TRUE),
+    ('Box Jump Platform', 'functional', TRUE),
+    ('Sled Track', 'functional', TRUE);
 
 INSERT INTO
     location_equipment (location_id, equipment_id)
@@ -423,3 +440,4 @@ VALUES (1, 1),
     (2, 4),
     (2, 6),
     (2, 8);
+

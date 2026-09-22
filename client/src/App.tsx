@@ -12,6 +12,7 @@ import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { PrivateRoutes } from "./layouts/PrivateRoutes";
+import { AddLocationPage } from "./pages/AddLocationPage";
 //import { WorkoutsPage } from "./pages/WorkoutsPage";
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
+        <Route path="/locations/new" element={<AddLocationPage />} />
         <Route path="/locations/:locationId" element={<LocationPage />} />
         <Route path="/workouts/:workoutId" element={<WorkoutPage />} />
         <Route path="/workouts/:workoutId/edit" element={<WorkoutFormPage />} />

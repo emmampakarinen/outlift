@@ -14,11 +14,6 @@ export function HomePage() {
   const [locations, setLocations] = useState<Location[]>([]);
   const { token } = useAuth();
 
-  async function loadLocations() {
-    const data = await getLocations(token);
-    setLocations(data);
-  }
-
   useEffect(() => {
     if (!token) return;
 
@@ -40,7 +35,7 @@ export function HomePage() {
       </div>
 
       <section className="mx-4 mb-5">
-        <MapPreview locations={locations} onLocationsChange={loadLocations} />
+        <MapPreview locations={locations} />
       </section>
 
       <section className="mb-5">

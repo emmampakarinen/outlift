@@ -60,18 +60,19 @@ locationRouter.post(
   "/",
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
-    const userId = req.user?.id;
+    const userId = req.user!.id;
+    console.log(userId, req.body);
 
-    const { name, latitude, longitude, description } =
+    const { name, address, type, latitude, longitude, description } =
       req.body as CreateLocation;
 
     try {
       const newLocation = await pool.query(
         `INSERT INTO locations
-          (name, latitude, longitude, description, created_by)
-         VALUES ($1, $2, $3, $4, $5)
+          (name, address, type, latitude, longitude, description, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
-        [name, latitude, longitude, description, userId],
+        [name, address, type, latitude, longitude, description, userId],
       );
 
       return res.status(201).json(newLocation.rows[0]);
@@ -111,6 +112,7 @@ locationRouter.delete(
 );
 
 // update location
+// TODO update based on changes to schema
 locationRouter.patch(
   "/:id",
   authenticateToken,
@@ -212,50 +214,6 @@ locationRouter.post(
       return res
         .status(500)
         .json({ error: "Failed to add location's equipment" });
-    }
-  },
-);
-
-// delete equipment from location
-locationRouter.delete(
-  "/:id/equipment/:equipmentId",
-  authenticateToken,
-  async (req: AuthRequest, res: Response) => {
-    const equipmentId = req.params.equipmentId;
-    const locationId = req.params.id;
-    const userId = req.user?.id;
-
-    try {
-      // make sure the location belongs to this user
-      const location = await pool.query(
-        `SELECT id
-         FROM locations
-         WHERE id = $1
-           AND created_by = $2`,
-        [locationId, userId],
-      );
-
-      if (location.rowCount === 0) {
-        return res.status(404).json({ error: "Location not found" });
-      }
-
-      const result = await pool.query(
-        `DELETE FROM location_equipment
-         WHERE location_id = $1
-           AND equipment_id = $2`,
-        [locationId, equipmentId],
-      );
-
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: "Equipment not found" });
-      }
-
-      return res.status(204).send();
-    } catch (error) {
-      console.error("Failed to delete location's equipment:", error);
-      return res
-        .status(500)
-        .json({ error: "Failed to delete location's equipment" });
     }
   },
 );

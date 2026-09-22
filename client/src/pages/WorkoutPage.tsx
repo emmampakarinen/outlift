@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  ArrowLeft,
   Clock3,
   Dumbbell,
   Layers3,
@@ -15,6 +14,7 @@ import type { Workout } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
 import { C, CATEGORY_COLORS } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
+import { BackButton } from "../components/BackButton";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
@@ -59,19 +59,7 @@ export function WorkoutPage() {
     <main className="min-h-screen px-5 pt-7 pb-8" style={{ background: C.bg }}>
       {/* Header */}
       <header className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => goBack()}
-          className="flex h-9 w-9 items-center justify-center rounded-full"
-          style={{
-            background: C.card,
-            border: `1px solid ${C.border}`,
-            color: C.text,
-          }}
-        >
-          <ArrowLeft size={20} strokeWidth={2.5} />
-        </button>
-
+        <BackButton onNavigateBack={() => goBack()} />
         <div className="flex items-center gap-2">
           <button
             type="button"
