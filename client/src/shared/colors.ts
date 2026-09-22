@@ -14,8 +14,10 @@ export const C = {
   textSub: "#374151",
   textMuted: "#6B7280",
   textFaint: "#9CA3AF",
-};
 
+  danger: "#EF4444",
+  dangerLight: "#FEF2F2",
+};
 export const CATEGORY_COLORS = {
   "Upper Body": {
     background: "#DBEAFE",

@@ -16,3 +16,7 @@ export function createLocation(location: CreateLocationData, token: string) {
 export function getLocationById(id: number, token: string) {
   return apiRequest<Location>(`/locations/${id}`, { token });
 }
+
+export function deleteLocation(id: number, token: string) {
+  return apiRequest<Location>(`/locations/${id}`, { token, method: "DELETE" });
+}

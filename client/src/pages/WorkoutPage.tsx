@@ -15,6 +15,7 @@ import { useAppNavigation } from "../shared/helpers";
 import { C, CATEGORY_COLORS } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
+import { StatCard } from "../components/StatCard";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
@@ -215,38 +216,6 @@ export function WorkoutPage() {
         </div>
       </section>
     </main>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: string | number;
-  icon: React.ReactNode;
-}) {
-  return (
-    <div
-      className="rounded-2xl p-3.5 text-center"
-      style={{
-        background: C.card,
-        border: `1px solid ${C.border}`,
-      }}
-    >
-      <div className="mb-1 flex justify-center" style={{ color: C.sage }}>
-        {icon}
-      </div>
-
-      <p className="text-lg font-bold" style={{ color: C.text }}>
-        {value}
-      </p>
-
-      <p className="text-xs" style={{ color: C.textMuted }}>
-        {label}
-      </p>
-    </div>
   );
 }
 

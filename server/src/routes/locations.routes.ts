@@ -91,8 +91,18 @@ locationRouter.delete(
     const locationId = req.params.id;
     const userId = req.user?.id;
 
+    const client = await pool.connect();
+
     try {
-      const result = await pool.query(
+      await client.query("BEGIN");
+
+      await client.query(
+        `DELETE FROM location_equipment
+         WHERE location_id = $1`,
+        [locationId],
+      );
+
+      const result = await client.query(
         `DELETE FROM locations
          WHERE id = $1
            AND created_by = $2`,
@@ -103,10 +113,16 @@ locationRouter.delete(
         return res.status(404).json({ error: "Requested location not found" });
       }
 
+      await client.query("COMMIT");
+
       return res.status(204).send();
     } catch (error) {
+      await client.query("ROLLBACK");
+
       console.error("Failed to delete location:", error);
       return res.status(500).json({ error: "Failed to delete location" });
+    } finally {
+      client.release();
     }
   },
 );

@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 
 import type { Location, Workout } from "../shared/types";
 import { getWorkoutsByLocation } from "../api/workouts";
-import { getLocationById } from "../api/locations";
+import { deleteLocation, getLocationById } from "../api/locations";
 import { WorkoutCard } from "../components/WorkoutCard";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
 import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
+import { StatCard } from "../components/StatCard";
 
 export function LocationPage() {
   const { locationId } = useParams();
@@ -41,6 +42,13 @@ export function LocationPage() {
         )
       : 0;
 
+  async function handleDeleteLocation() {
+    if (!locationId || !token) return;
+
+    await deleteLocation(Number(locationId), token);
+
+    goBack();
+  }
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
       {/* Hero */}
@@ -170,27 +178,19 @@ export function LocationPage() {
         >
           Create New Workout Here
         </button>
+        <button
+          type="button"
+          onClick={handleDeleteLocation}
+          className="mt-3 w-full rounded-2xl py-4 text-sm font-semibold"
+          style={{
+            background: C.dangerLight,
+            color: C.danger,
+            border: `1px solid ${C.danger}`,
+          }}
+        >
+          Delete Location
+        </button>
       </div>
     </main>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div
-      className="rounded-2xl p-3 text-center"
-      style={{
-        background: C.card,
-        border: `1px solid ${C.border}`,
-      }}
-    >
-      <p className="text-lg font-bold" style={{ color: C.forest }}>
-        {value}
-      </p>
-
-      <p className="mt-0.5 text-xs" style={{ color: C.textMuted }}>
-        {label}
-      </p>
-    </div>
   );
 }

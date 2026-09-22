@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/useContext";
 import { getWorkouts } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { C } from "../shared/colors";
+import { StatCard } from "../components/StatCard";
 
 function ProfilePage() {
   const { user, logout, token } = useAuth();
@@ -127,26 +128,6 @@ function ProfilePage() {
         </button>
       </div>
     </main>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div
-      className="rounded-2xl p-3.5 text-center"
-      style={{
-        background: C.card,
-        border: `1px solid ${C.border}`,
-      }}
-    >
-      <p className="text-xl font-bold" style={{ color: C.forest }}>
-        {value}
-      </p>
-
-      <p className="mt-0.5 text-xs" style={{ color: C.textMuted }}>
-        {label}
-      </p>
-    </div>
   );
 }
 
