@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { createLocation } from "../api/locations";
 import { createLocationEquipment, getEquipment } from "../api/equipment";
-import { useAuth } from "../contexts/useContext";
+import { useAuth, useUserLocation } from "../contexts/useContext";
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
 import type { Equipment } from "../shared/types";
@@ -25,6 +25,13 @@ export function AddLocationPage() {
   const { goBack } = useAppNavigation();
   const { token } = useAuth();
 
+  const { userLocation } = useUserLocation();
+
+  const center = userLocation ?? {
+    lat: 60.1699,
+    lng: 24.9384,
+  };
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -40,11 +47,6 @@ export function AddLocationPage() {
   const [selectedEquipment, setSelectedEquipment] = useState<Equipment[]>([]);
 
   const [customInput, setCustomInput] = useState("");
-
-  const center = {
-    lat: 60.1699,
-    lng: 24.9384,
-  };
 
   useEffect(() => {
     if (!token) return;
@@ -173,7 +175,7 @@ export function AddLocationPage() {
             >
               <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
                 <Map
-                  defaultCenter={center}
+                  center={center}
                   defaultZoom={14}
                   mapId="DEMO_MAP_ID"
                   disableDefaultUI
@@ -189,6 +191,19 @@ export function AddLocationPage() {
                     });
                   }}
                 >
+                  {userLocation && (
+                    <AdvancedMarker
+                      position={userLocation}
+                      title="Your location"
+                    >
+                      <div
+                        className="h-4 w-4 rounded-full border-2 border-white shadow-md"
+                        style={{
+                          background: "#2563eb",
+                        }}
+                      />
+                    </AdvancedMarker>
+                  )}
                   {selectedPosition && (
                     <AdvancedMarker
                       position={selectedPosition}

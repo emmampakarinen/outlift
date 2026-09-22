@@ -125,3 +125,8 @@ export interface LocationEquipment {
   id: number;
   name: string;
 }
+
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}

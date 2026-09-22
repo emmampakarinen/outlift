@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { User } from "../shared/types";
+import type { Coordinates, User } from "../shared/types";
 
 interface AuthContextType {
   user: User | null;
@@ -20,4 +20,16 @@ export function useAuth() {
   }
 
   return context;
+}
+
+type LocationContextType = {
+  userLocation: Coordinates | null;
+};
+
+export const LocationContext = createContext<LocationContextType>({
+  userLocation: null,
+});
+
+export function useUserLocation() {
+  return useContext(LocationContext);
 }
