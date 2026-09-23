@@ -12,11 +12,12 @@ import {
 import { WorkoutCard } from "../components/WorkoutCard";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
 import { StatCard } from "../components/StatCard";
 import { EquipmentChips } from "../components/EquipmentChips";
+import { LocationMap } from "../components/LocationMap";
+import { APIProvider } from "@vis.gl/react-google-maps";
 
 export function LocationPage() {
   const { locationId } = useParams();
@@ -58,30 +59,21 @@ export function LocationPage() {
 
     goBack();
   }
+
+  // TODO use locationmap-component here
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
       {/* Hero */}
       <div className="relative h-56 overflow-hidden">
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-          <Map
-            center={{
+          <LocationMap
+            locations={[location]}
+            focusPosition={{
               lat: Number(location.latitude),
               lng: Number(location.longitude),
             }}
-            zoom={15}
-            mapId="DEMO_MAP_ID"
-            disableDefaultUI
-            gestureHandling="none"
-            className="h-full w-full"
-          >
-            <AdvancedMarker
-              position={{
-                lat: Number(location.latitude),
-                lng: Number(location.longitude),
-              }}
-              title={location.name}
-            />
-          </Map>
+            interactive={false}
+          />
         </APIProvider>
 
         <BackButton onNavigateBack={() => goBack()} variant="overlay" />
@@ -103,7 +95,7 @@ export function LocationPage() {
           <MapPin size={12} style={{ color: C.textFaint }} />
 
           <span className="text-sm" style={{ color: C.textMuted }}>
-            Outdoor training spot
+            {location.address}
           </span>
         </div>
 

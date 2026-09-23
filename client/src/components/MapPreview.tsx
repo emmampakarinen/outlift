@@ -1,9 +1,9 @@
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
+import { APIProvider } from "@vis.gl/react-google-maps";
 import { MapPin, Plus } from "lucide-react";
 import type { Location } from "../shared/types";
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
-import { useUserLocation } from "../contexts/useContext";
+import { LocationMap } from "./LocationMap";
 
 type MapPreviewProps = {
   locations: Location[];
@@ -11,13 +11,6 @@ type MapPreviewProps = {
 
 export function MapPreview({ locations }: MapPreviewProps) {
   const { goTo } = useAppNavigation();
-
-  const { userLocation } = useUserLocation();
-
-  const center = userLocation ?? {
-    lat: 60.1699,
-    lng: 24.9384,
-  };
 
   return (
     <>
@@ -31,46 +24,7 @@ export function MapPreview({ locations }: MapPreviewProps) {
       >
         <div className="relative h-64">
           <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-            <Map
-              center={center}
-              defaultZoom={13}
-              mapId="DEMO_MAP_ID"
-              className="h-full w-full"
-              disableDefaultUI
-            >
-              {userLocation && (
-                <AdvancedMarker position={userLocation} title="Your location">
-                  <div
-                    className="h-4 w-4 rounded-full border-2 border-white shadow-md"
-                    style={{
-                      background: "#2563eb",
-                    }}
-                  />
-                </AdvancedMarker>
-              )}
-
-              {locations.map((location) => (
-                <AdvancedMarker
-                  key={location.id}
-                  position={{
-                    lat: Number(location.latitude),
-                    lng: Number(location.longitude),
-                  }}
-                  title={location.name}
-                >
-                  <div
-                    className="flex h-9 w-9 items-center justify-center rounded-full shadow-md"
-                    style={{
-                      background: C.forest,
-                      color: "white",
-                      border: "2px solid white",
-                    }}
-                  >
-                    <MapPin size={18} />
-                  </div>
-                </AdvancedMarker>
-              ))}
-            </Map>
+            <LocationMap locations={locations} />
           </APIProvider>
 
           <button

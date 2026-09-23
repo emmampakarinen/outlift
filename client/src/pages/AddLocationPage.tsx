@@ -1,45 +1,32 @@
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
-import { Map as MapIcon, MapPin, Plus } from "lucide-react";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { createLocation } from "../api/locations";
 import { createLocationEquipment, getEquipment } from "../api/equipment";
-import { useAuth, useUserLocation } from "../contexts/useContext";
+import { useAuth } from "../contexts/useContext";
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
-import type { Equipment } from "../shared/types";
+import type { Coordinates, Equipment } from "../shared/types";
 
 import { BackButton } from "../components/BackButton";
 import { ActionButton } from "../components/ActionButton";
 import { InputField } from "../components/InputField";
 import { EquipmentChips } from "../components/EquipmentChips";
-
-type Position = {
-  lat: number;
-  lng: number;
-};
-
-type LocationMode = "map" | "address";
+import { AddressAutocomplete } from "../components/AddressAutoComplete";
+import { LocationMap } from "../components/LocationMap";
 
 export function AddLocationPage() {
   const { goBack } = useAppNavigation();
   const { token } = useAuth();
 
-  const { userLocation } = useUserLocation();
-
-  const center = userLocation ?? {
-    lat: 60.1699,
-    lng: 24.9384,
-  };
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const [locationMode, setLocationMode] = useState<LocationMode>("map");
-
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
-    null,
-  );
+  const [selectedPosition, setSelectedPosition] = useState<{
+    position: Coordinates;
+    address: string;
+  } | null>(null);
 
   const [address, setAddress] = useState("");
 
@@ -54,7 +41,6 @@ export function AddLocationPage() {
     getEquipment(token).then(setEquipment);
   }, [token]);
 
-  // location name and (TODO: address OR) pin on map need to be given to save the location
   const canSave = name.trim().length > 0 && selectedPosition !== null;
 
   function toggleEquipment(item: Equipment) {
@@ -79,8 +65,8 @@ export function AddLocationPage() {
         name: name.trim(),
         description: description.trim(),
         address: address,
-        latitude: selectedPosition.lat,
-        longitude: selectedPosition.lng,
+        latitude: selectedPosition.position.lat,
+        longitude: selectedPosition.position.lng,
       },
       token,
     );
@@ -126,115 +112,81 @@ export function AddLocationPage() {
           <InputField defaultValue={name} setInput={setName} />
         </section>
 
-        <section className="mb-6">
-          <label
-            className="mb-3 block text-xs font-semibold uppercase tracking-wider"
-            style={{ color: C.textMuted }}
-          >
-            Location
-          </label>
-
-          <div
-            className="mb-4 flex rounded-2xl p-1"
-            style={{ background: C.muted }}
-          >
-            <button
-              type="button"
-              onClick={() => setLocationMode("map")}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold"
-              style={{
-                background: locationMode === "map" ? C.card : "transparent",
-                color: locationMode === "map" ? C.forest : C.textMuted,
-              }}
+        <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+          <section className="mb-6">
+            <label
+              className="mb-3 block text-xs font-semibold uppercase tracking-wider"
+              style={{ color: C.textMuted }}
             >
-              <MapIcon size={14} />
-              Drop Pin
-            </button>
+              Location
+            </label>
 
-            <button
-              type="button"
-              onClick={() => setLocationMode("address")}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-semibold"
-              style={{
-                background: locationMode === "address" ? C.card : "transparent",
-                color: locationMode === "address" ? C.forest : C.textMuted,
+            {/* Address */}
+            <AddressAutocomplete
+              value={address}
+              onChange={(value) => {
+                setAddress(value);
+
+                // If user starts editing the input,
+                // old coordinates might not match the address anymore
+                setSelectedPosition(null);
               }}
-            >
-              <MapPin size={14} />
-              Address
-            </button>
-          </div>
+              onPlaceSelect={(place) => {
+                setAddress(place.address);
 
-          {locationMode === "map" ? (
+                setSelectedPosition({
+                  position: {
+                    lat: place.lat,
+                    lng: place.lng,
+                  },
+                  address: place.address,
+                });
+              }}
+            />
+
+            {/* OR divider */}
+            <div className="my-4 flex items-center gap-3">
+              <div className="h-px flex-1" style={{ background: C.border }} />
+
+              <span
+                className="text-xs font-medium uppercase"
+                style={{ color: C.textFaint }}
+              >
+                or
+              </span>
+
+              <div className="h-px flex-1" style={{ background: C.border }} />
+            </div>
+
+            {/* Map */}
             <div
               className="relative overflow-hidden rounded-2xl"
               style={{
-                height: 210,
+                height: 230,
                 border: `2px solid ${selectedPosition ? C.forest : C.border}`,
               }}
             >
-              <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-                <Map
-                  center={center}
-                  defaultZoom={14}
-                  mapId="DEMO_MAP_ID"
-                  disableDefaultUI
-                  className="h-full w-full"
-                  onClick={(event) => {
-                    const position = event.detail.latLng;
+              <LocationMap
+                selectedPosition={selectedPosition}
+                onSelectPosition={(position, address) => {
+                  setSelectedPosition({
+                    position,
+                    address,
+                  });
 
-                    if (!position) return;
-
-                    setSelectedPosition({
-                      lat: position.lat,
-                      lng: position.lng,
-                    });
-                  }}
-                >
-                  {userLocation && (
-                    <AdvancedMarker
-                      position={userLocation}
-                      title="Your location"
-                    >
-                      <div
-                        className="h-4 w-4 rounded-full border-2 border-white shadow-md"
-                        style={{
-                          background: "#2563eb",
-                        }}
-                      />
-                    </AdvancedMarker>
-                  )}
-                  {selectedPosition && (
-                    <AdvancedMarker
-                      position={selectedPosition}
-                      title="New training spot"
-                    />
-                  )}
-                </Map>
-              </APIProvider>
-            </div>
-          ) : (
-            <div className="relative">
-              <MapPin
-                size={15}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2"
-                style={{ color: C.textFaint }}
-              />
-
-              <input
-                value={address}
-                onChange={(event) => setAddress(event.target.value)}
-                placeholder="Enter address or place name"
-                className="w-full rounded-2xl py-3 pr-4 pl-10 text-sm outline-none"
-                style={{
-                  background: C.card,
-                  border: `1px solid ${C.border}`,
-                  color: C.text,
+                  setAddress(address);
                 }}
               />
             </div>
-          )}
-        </section>
+
+            <p
+              className="mt-2 text-center text-xs"
+              style={{ color: C.textFaint }}
+            >
+              Search for an address or drop a pin on the map
+            </p>
+          </section>
+        </APIProvider>
 
         <section className="mb-6">
           <label

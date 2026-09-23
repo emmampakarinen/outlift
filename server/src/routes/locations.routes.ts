@@ -97,6 +97,12 @@ locationRouter.delete(
       await client.query("BEGIN");
 
       await client.query(
+        `DELETE FROM workouts
+         WHERE location_id = $1`,
+        [locationId],
+      );
+
+      await client.query(
         `DELETE FROM location_equipment
          WHERE location_id = $1`,
         [locationId],

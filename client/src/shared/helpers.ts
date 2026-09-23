@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
 
 export function useAppNavigation() {
   const navigate = useNavigate();
@@ -30,4 +31,22 @@ export function useAppNavigation() {
     goTo,
     goBack,
   };
+}
+
+export function useReverseGeocode() {
+  const geocoding = useMapsLibrary("geocoding");
+
+  async function reverseGeocode(position: { lat: number; lng: number }) {
+    if (!geocoding) return null;
+
+    const geocoder = new geocoding.Geocoder();
+
+    const response = await geocoder.geocode({
+      location: position,
+    });
+
+    return response.results[0]?.formatted_address ?? null;
+  }
+
+  return reverseGeocode;
 }
