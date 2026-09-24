@@ -1,11 +1,12 @@
 import express, { type Express, type Request, type Response } from "express";
-import locationRouter from "./routes/locations.routes.js";
-import workoutRouter from "./routes/workouts.routes.js";
+import locationRouter from "#routes/locations.routes.js";
+import workoutRouter from "#routes/workouts.routes.js";
 import exerciseRouter from "#routes/exercises.routes.js";
 import cors from "cors";
 import userRouter from "#routes/users.routes.js";
 import authRouter from "#routes/authentication.routes.js";
 import equipmentRouter from "#routes/equipment.routes.js";
+import aiRouter from "#routes/ai.routes.js";
 
 const app: Express = express();
 const port = 3000;
@@ -27,6 +28,7 @@ app.use("/exercises", exerciseRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/equipment", equipmentRouter);
+app.use("/ai", aiRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

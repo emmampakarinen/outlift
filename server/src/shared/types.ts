@@ -17,7 +17,7 @@ export interface User {
 
 export interface CreateLocation {
   name: string;
-  address?: string;
+  address: string;
   type?: string;
   description?: string;
   latitude: number;
