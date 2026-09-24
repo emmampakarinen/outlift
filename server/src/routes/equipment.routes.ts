@@ -1,7 +1,11 @@
 import { type Response, Router } from "express";
-import pool from "../db/db.js";
 import type { AuthRequest } from "#shared/types.js";
 import { authenticateToken } from "#middleware/authMiddleware.js";
+import {
+  addLocationEquipment,
+  editLocationEquipment,
+  getEquipment,
+} from "../services/equipment.service.ts";
 
 const equipmentRouter: Router = Router();
 
@@ -11,12 +15,15 @@ equipmentRouter.get(
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
     try {
-      const equipments = await pool.query("SELECT * FROM equipment");
+      const equipments = await getEquipment();
 
-      return res.json(equipments.rows);
+      return res.json(equipments);
     } catch (error) {
       console.error("Failed to fetch equipments:", error);
-      return res.status(500).json({ error: "Failed to fetch equipments" });
+
+      return res.status(500).json({
+        error: "Failed to fetch equipments",
+      });
     }
   },
 );
@@ -27,73 +34,42 @@ equipmentRouter.post(
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
     const { locationId, equipmentIds } = req.body;
-    const client = await pool.connect();
 
     try {
-      await client.query("BEGIN");
+      await addLocationEquipment(locationId, equipmentIds);
 
-      for (const id of equipmentIds) {
-        await client.query(
-          "INSERT INTO location_equipment (location_id, equipment_id) VALUES ($1, $2)",
-          [locationId, id],
-        );
-      }
-
-      await client.query("COMMIT");
-
-      return res.status(201).json({ message: "Equipments added to location" });
+      return res.status(201).json({
+        message: "Equipments added to location",
+      });
     } catch (error) {
-      await client.query("ROLLBACK");
-
       console.error("Failed to add equipments:", error);
 
       return res.status(500).json({
         error: "Failed to add equipments",
       });
-    } finally {
-      client.release();
     }
   },
 );
 
-// route for editing location's equipment
+// editing location's equipment
 equipmentRouter.patch(
   "/",
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
     const { locationId, equipmentIds } = req.body;
-    const client = await pool.connect();
 
     try {
-      await client.query("BEGIN");
+      await editLocationEquipment(locationId, equipmentIds);
 
-      await client.query(
-        "DELETE FROM location_equipment WHERE location_id = $1",
-        [locationId],
-      );
-
-      for (const id of equipmentIds) {
-        await client.query(
-          "INSERT INTO location_equipment (location_id, equipment_id) VALUES ($1, $2)",
-          [locationId, id],
-        );
-      }
-
-      await client.query("COMMIT");
-
-      return res
-        .status(201)
-        .json({ message: "Equipments patched to location" });
+      return res.status(200).json({
+        message: "Equipments updated for location",
+      });
     } catch (error) {
-      await client.query("ROLLBACK");
-
       console.error("Failed to patch equipments:", error);
 
       return res.status(500).json({
         error: "Failed to patch equipments",
       });
-    } finally {
-      client.release();
     }
   },
 );

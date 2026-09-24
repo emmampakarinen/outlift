@@ -24,7 +24,7 @@ export function LibraryPage() {
   useEffect(() => {
     if (!token) return;
 
-    getExercises().then(setExercises);
+    getExercises(token).then(setExercises);
     getWorkouts(token).then(setWorkouts);
   }, [token]);
 

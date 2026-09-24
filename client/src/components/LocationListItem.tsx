@@ -59,7 +59,7 @@ export function LocationListItem({ location }: Props) {
                 className="line-clamp-2 text-xs"
                 style={{ color: C.textMuted }}
               >
-                {location.description || "Outdoor training spot"}
+                {location.address || "No address"}
               </p>
             </div>
           </div>
@@ -74,7 +74,7 @@ export function LocationListItem({ location }: Props) {
           />
 
           <span className="text-xs" style={{ color: C.textMuted }}>
-            Outdoor training spot
+            {location.description || "Outdoor training spot"}
           </span>
         </div>
       </div>

@@ -1,11 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import type { Exercise } from "../shared/types";
+import { apiRequest } from "./apiRequest";
 
-export async function getExercises() {
-  const response = await fetch(`${API_URL}/exercises`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch exercises");
-  }
-
-  return response.json();
+export function getExercises(token: string) {
+  return apiRequest<Exercise[]>("/exercises/", {
+    token,
+  });
 }

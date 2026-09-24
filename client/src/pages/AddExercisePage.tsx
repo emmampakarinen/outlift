@@ -11,6 +11,7 @@ import type { Exercise, WorkoutExercise } from "../shared/types";
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
 import { BackButton } from "../components/BackButton";
+import { useAuth } from "../contexts/useContext";
 
 export function AddExercisePage() {
   const location = useLocation();
@@ -21,10 +22,11 @@ export function AddExercisePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const draft = location.state?.draft;
+  const { token } = useAuth();
 
   useEffect(() => {
-    getExercises().then(setExercises);
-  }, []);
+    getExercises(token).then(setExercises);
+  }, [token]);
 
   const filteredExercises = useMemo(() => {
     return exercises.filter((exercise) => {
