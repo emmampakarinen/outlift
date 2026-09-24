@@ -3,7 +3,7 @@ import { getLocations } from "../api/locations";
 import { getWorkouts } from "../api/workouts";
 import { HomeHeader } from "../components/HomeHeader";
 import { MapPreview } from "../components/MapPreview";
-import { NearbySpotCard } from "../components/NearbySpotCard";
+import { SavedLocationCard } from "../components/SavedLocationCard";
 import { WorkoutCard } from "../components/WorkoutCard";
 import type { Location, Workout } from "../shared/types";
 import { C } from "../shared/colors";
@@ -48,7 +48,7 @@ export function HomePage() {
         <div className="no-scrollbar flex gap-3 overflow-x-auto px-5 pb-1">
           {recentlySavedLocations.length > 0 ? (
             recentlySavedLocations.map((location) => (
-              <NearbySpotCard
+              <SavedLocationCard
                 key={location.id}
                 id={location.id}
                 name={location.name}

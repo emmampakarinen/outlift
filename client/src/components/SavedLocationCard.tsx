@@ -8,14 +8,18 @@ type NearbySpotCardProps = {
   description?: string;
 };
 
-export function NearbySpotCard({ id, name, description }: NearbySpotCardProps) {
+export function SavedLocationCard({
+  id,
+  name,
+  description,
+}: NearbySpotCardProps) {
   const { goTo } = useAppNavigation();
 
   return (
     <button
       type="button"
       onClick={() => goTo(`/locations/${id}`)}
-      className="w-44 shrink-0 overflow-hidden rounded-2xl text-left transition hover:-translate-y-0.5"
+      className="flex w-44 shrink-0 flex-col items-stretch justify-start overflow-hidden rounded-2xl p-0 text-left transition hover:-translate-y-0.5"
       style={{
         background: C.card,
         border: `1px solid ${C.border}`,
@@ -41,7 +45,7 @@ export function NearbySpotCard({ id, name, description }: NearbySpotCardProps) {
 
       <div className="p-3">
         <h3
-          className="mb-1 truncate text-sm font-semibold"
+          className="mb-1 line-clamp-2 text-sm font-semibold leading-snug"
           style={{ color: C.text }}
         >
           {name}
