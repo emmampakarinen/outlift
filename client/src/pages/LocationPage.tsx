@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Dumbbell, MapPin } from "lucide-react";
+import { Dumbbell, MapPin, Sparkles } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 import type { Location, LocationEquipment, Workout } from "../shared/types";
@@ -131,6 +131,34 @@ export function LocationPage() {
           <EquipmentChips equipment={locationEquipment} />
         </section>
 
+        <div className="mt-6 flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={() => goTo(`/locations/${locationId}/workouts/generate`)}
+            className="w-full rounded-2xl py-4 text-sm font-semibold"
+            style={{
+              background: C.forest,
+              color: "white",
+            }}
+          >
+            {"Generate Workout"}
+            <Sparkles size={16} className="ml-2 inline-block" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goTo(`/locations/${locationId}/workouts/new`)}
+            className="w-full rounded-2xl py-4 text-sm font-semibold"
+            style={{
+              background: C.card,
+              color: C.forest,
+              border: `1px solid ${C.border}`,
+            }}
+          >
+            Create Workout Manually
+          </button>
+        </div>
+
         {/* Workouts */}
         {workouts.length > 0 && (
           <section className="mt-6">
@@ -177,18 +205,6 @@ export function LocationPage() {
             </p>
           </div>
         )}
-
-        <button
-          type="button"
-          onClick={() => goTo(`/locations/${locationId}/workouts/new`)}
-          className="mt-6 w-full rounded-2xl py-4 text-sm font-semibold"
-          style={{
-            background: C.forest,
-            color: "white",
-          }}
-        >
-          Create New Workout Here
-        </button>
 
         <button
           type="button"

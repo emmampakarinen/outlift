@@ -12,10 +12,11 @@ import {
 import { deleteWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
-import { C, CATEGORY_COLORS } from "../shared/colors";
+import { C, CATEGORY_COLORS, INTENSITY_COLORS } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
 import { StatCard } from "../components/StatCard";
+import { InfoChip } from "../components/InfoChip";
 
 export function WorkoutPage() {
   const { workoutId } = useParams();
@@ -56,6 +57,12 @@ export function WorkoutPage() {
     goBack();
   }
 
+  function formatLabel(value: string) {
+    return value
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
   return (
     <main className="min-h-screen px-5 pt-7 pb-8" style={{ background: C.bg }}>
       {/* Header */}
@@ -93,7 +100,7 @@ export function WorkoutPage() {
       {/* Workout info */}
       <section className="mt-6">
         <h1
-          className="mb-1 text-2xl font-bold"
+          className="mb-2 text-2xl font-bold"
           style={{
             color: C.text,
             letterSpacing: "-0.5px",
@@ -105,6 +112,7 @@ export function WorkoutPage() {
         <div className="flex flex-wrap items-center gap-1.5">
           <MapPin size={12} style={{ color: C.textFaint }} />
 
+          {/** TODO show address/location name instead of location id */}
           <span className="text-sm" style={{ color: C.textMuted }}>
             {workout.location_id
               ? `Location #${workout.location_id}`
@@ -118,6 +126,24 @@ export function WorkoutPage() {
           </span>
         </div>
       </section>
+
+      <div className="mt-2 flex flex-wrap gap-2">
+        <InfoChip
+          background={INTENSITY_COLORS[workout.intensity].background}
+          color={INTENSITY_COLORS[workout.intensity].text}
+          border={INTENSITY_COLORS[workout.intensity].border}
+        >
+          {formatLabel(workout.intensity)}
+        </InfoChip>
+
+        <InfoChip background={C.muted} color={C.textSub} border={C.border}>
+          {formatLabel(workout.muscle_group)}
+        </InfoChip>
+
+        <InfoChip background={C.sageLight} color={C.forest}>
+          {formatLabel(workout.workout_type)}
+        </InfoChip>
+      </div>
 
       {/* Stats */}
       <section className="mt-5 grid grid-cols-3 gap-3">

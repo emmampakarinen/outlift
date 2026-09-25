@@ -27,6 +27,40 @@ CREATE TABLE workouts (
     name VARCHAR(255),
     description VARCHAR(255),
     duration_minutes INTEGER,
+
+    intensity VARCHAR(100) NOT NULL
+        CHECK (
+            intensity IN (
+                'easy',
+                'moderate',
+                'hard',
+                'all-out'
+            )
+        ),
+
+    workout_type VARCHAR(100) NOT NULL
+        CHECK (
+            workout_type IN (
+                'strength',
+                'hiit',
+                'cardio',
+                'mobility',
+                'endurance',
+                'circuit',
+                'mixed'
+            )
+        ),
+
+    muscle_group VARCHAR(100) NOT NULL
+        CHECK (
+            muscle_group IN (
+                'full-body',
+                'upper-body',
+                'lower-body',
+                'core'
+            )
+        ),
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -37,42 +37,61 @@ INSERT INTO
         location_id,
         name,
         description,
-        duration_minutes
+        duration_minutes,
+        intensity,
+        workout_type,
+        muscle_group
     )
-VALUES (
+VALUES
+    (
         1,
         1,
         'Morning Circuit',
         'Full body outdoor workout',
-        45
+        45,
+        'moderate',
+        'circuit',
+        'full-body'
     ),
     (
         1,
         1,
         'Upper Body Strength',
         'Pull-ups, dips and push-ups',
-        50
+        50,
+        'hard',
+        'strength',
+        'upper-body'
     ),
     (
         1,
         2,
         'Leg Day',
         'Lower body strength workout',
-        60
+        60,
+        'hard',
+        'strength',
+        'lower-body'
     ),
     (
         1,
         2,
         'Quick HIIT',
         'Short high intensity workout',
-        25
+        25,
+        'all-out',
+        'hiit',
+        'full-body'
     ),
     (
         1,
         NULL,
         'Home Mobility',
         'Light mobility and recovery session',
-        30
+        30,
+        'easy',
+        'mobility',
+        'full-body'
     );
 
 INSERT INTO

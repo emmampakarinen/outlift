@@ -130,15 +130,27 @@ export async function createWorkout(
 
     const workoutResult = await client.query(
       `INSERT INTO workouts
-          (user_id, location_id, name, description, duration_minutes)
-         VALUES ($1, $2, $3, $4, $5)
-         RETURNING *`,
+        (
+          user_id,
+          location_id,
+          name,
+          description,
+          duration_minutes,
+          intensity,
+          workout_type,
+          muscle_group
+        )
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING *`,
       [
         userId,
         newWorkoutData.location_id,
         newWorkoutData.name,
         newWorkoutData.description,
         newWorkoutData.duration_minutes,
+        newWorkoutData.intensity,
+        newWorkoutData.workout_type,
+        newWorkoutData.muscle_group,
       ],
     );
 
@@ -147,8 +159,8 @@ export async function createWorkout(
     for (const exercise of newWorkoutData.exercises) {
       await client.query(
         `INSERT INTO workout_exercise
-            (workout_id, exercise_id, sets, reps, weight)
-           VALUES ($1, $2, $3, $4, $5)`,
+          (workout_id, exercise_id, sets, reps, weight)
+         VALUES ($1, $2, $3, $4, $5)`,
         [
           newWorkout.id,
           exercise.exercise_id,
@@ -214,22 +226,31 @@ export async function updateWorkout(
       updateWorkoutData.name !== undefined ||
       updateWorkoutData.description !== undefined ||
       updateWorkoutData.duration_minutes !== undefined ||
-      updateWorkoutData.location_id !== undefined
+      updateWorkoutData.location_id !== undefined ||
+      updateWorkoutData.intensity !== undefined ||
+      updateWorkoutData.workout_type !== undefined ||
+      updateWorkoutData.muscle_group !== undefined
     ) {
       await client.query(
         `UPDATE workouts
-           SET
-             name = COALESCE($1, name),
-             description = COALESCE($2, description),
-             duration_minutes = COALESCE($3, duration_minutes),
-             location_id = COALESCE($4, location_id)
-           WHERE id = $5
-             AND user_id = $6`,
+   SET
+     name = COALESCE($1, name),
+     description = COALESCE($2, description),
+     duration_minutes = COALESCE($3, duration_minutes),
+     location_id = COALESCE($4, location_id),
+     intensity = COALESCE($5, intensity),
+     workout_type = COALESCE($6, workout_type),
+     muscle_group = COALESCE($7, muscle_group)
+   WHERE id = $8
+     AND user_id = $9`,
         [
           updateWorkoutData.name,
           updateWorkoutData.description,
           updateWorkoutData.duration_minutes,
           updateWorkoutData.location_id,
+          updateWorkoutData.intensity,
+          updateWorkoutData.workout_type,
+          updateWorkoutData.muscle_group,
           workoutId,
           userId,
         ],

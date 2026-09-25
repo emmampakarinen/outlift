@@ -11,11 +11,18 @@ import type {
   WorkoutDraft,
 } from "../shared/types";
 
+import {
+  WORKOUT_INTENSITIES,
+  WORKOUT_TYPES,
+  MUSCLE_GROUPS,
+} from "../shared/types";
+
 import { EditExercise } from "../components/EditExercise";
 import { useAppNavigation } from "../shared/helpers";
-import { C } from "../shared/colors";
+import { C, INTENSITY_COLORS } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
+import { FormField } from "../components/FormField";
 
 export function WorkoutFormPage() {
   const { locationId, workoutId } = useParams();
@@ -31,6 +38,11 @@ export function WorkoutFormPage() {
     name: location.state?.draft?.name ?? "",
     duration_minutes: location.state?.draft?.duration_minutes ?? "",
     description: location.state?.draft?.description ?? "",
+
+    intensity: location.state?.draft?.intensity ?? "moderate",
+    workout_type: location.state?.draft?.workout_type ?? "strength",
+    muscle_group: location.state?.draft?.muscle_group ?? "full-body",
+
     exercises: location.state?.draft?.exercises ?? [],
     location_id: Number(locationId),
   }));
@@ -46,6 +58,11 @@ export function WorkoutFormPage() {
           name: data.name,
           duration_minutes: String(data.duration_minutes),
           description: data.description ?? "",
+
+          intensity: data.intensity,
+          workout_type: data.workout_type,
+          muscle_group: data.muscle_group,
+
           exercises: data.exercises,
           location_id: data.location_id,
         });
@@ -65,6 +82,11 @@ export function WorkoutFormPage() {
         name: draft.name,
         description: draft.description,
         duration_minutes: Number(draft.duration_minutes),
+
+        intensity: draft.intensity,
+        workout_type: draft.workout_type,
+        muscle_group: draft.muscle_group,
+
         exercises: draft.exercises,
       };
 
@@ -81,6 +103,11 @@ export function WorkoutFormPage() {
       description: draft.description,
       duration_minutes: Number(draft.duration_minutes),
       location_id: draft.location_id ?? undefined,
+
+      intensity: draft.intensity,
+      workout_type: draft.workout_type,
+      muscle_group: draft.muscle_group,
+
       exercises: draft.exercises,
     };
 
@@ -125,6 +152,12 @@ export function WorkoutFormPage() {
     goTo(`/workouts/${workoutId}/edit/exercises`, { draft });
   }
 
+  function formatLabel(value: string) {
+    return value
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
       {/* Header */}
@@ -156,67 +189,115 @@ export function WorkoutFormPage() {
 
       <div className="px-5 py-5">
         {/* Workout name */}
-        <div className="mb-4">
-          <label
-            className="mb-2 block text-xs font-semibold uppercase tracking-wider"
-            style={{ color: C.textMuted }}
-          >
-            Workout Name
-          </label>
-
-          <input
-            value={draft.name}
-            onChange={(event) =>
-              setDraft((current) => ({
-                ...current,
-                name: event.target.value,
-              }))
-            }
-            placeholder="Name your workout"
-            className="w-full rounded-2xl px-4 py-3 text-base font-medium outline-none"
-            style={{
-              background: C.card,
-              border: `1px solid ${C.border}`,
-              color: C.text,
-            }}
-          />
-        </div>
+        <FormField
+          label="Workout Name"
+          value={draft.name}
+          placeholder="Name your workout"
+          onChange={(value) =>
+            setDraft((current) => ({
+              ...current,
+              name: value,
+            }))
+          }
+        />
 
         {/* Duration */}
         <div className="mb-4">
+          <FormField
+            label="Duration (minutes)"
+            type="number"
+            min={1}
+            value={draft.duration_minutes}
+            onChange={(value) =>
+              setDraft((current) => ({
+                ...current,
+                duration_minutes: value,
+              }))
+            }
+          />
+        </div>
+
+        <div className="mb-5">
           <label
             className="mb-2 block text-xs font-semibold uppercase tracking-wider"
             style={{ color: C.textMuted }}
           >
-            Duration (minutes)
+            Intensity
           </label>
 
-          <input
-            type="number"
-            min={1}
-            value={draft.duration_minutes}
-            onChange={(event) =>
+          <div className="flex gap-2">
+            {WORKOUT_INTENSITIES.map((intensity) => {
+              const selected = draft.intensity === intensity;
+              const colors = INTENSITY_COLORS[intensity];
+
+              return (
+                <button
+                  key={intensity}
+                  type="button"
+                  onClick={() =>
+                    setDraft((current) => ({
+                      ...current,
+                      intensity,
+                    }))
+                  }
+                  className="min-w-0 flex-1 rounded-2xl px-1.5 py-3 text-xs font-semibold transition sm:text-sm"
+                  style={{
+                    background: selected ? colors.background : C.card,
+                    border: `1px solid ${selected ? colors.border : C.border}`,
+                    color: selected ? colors.text : C.textSub,
+                    boxShadow: selected ? `0 0 0 1px ${colors.border}` : "none",
+                  }}
+                >
+                  {formatLabel(intensity)}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <FormField
+            label="Workout Type"
+            type="select"
+            value={draft.workout_type}
+            options={WORKOUT_TYPES.map((type) => ({
+              value: type,
+              label: formatLabel(type),
+            }))}
+            onChange={(value) =>
               setDraft((current) => ({
                 ...current,
-                duration_minutes: event.target.value,
+                workout_type: value as WorkoutDraft["workout_type"],
               }))
             }
-            className="w-full rounded-2xl px-4 py-3 text-base font-medium outline-none"
-            style={{
-              background: C.card,
-              border: `1px solid ${C.border}`,
-              color: C.text,
-            }}
           />
         </div>
 
-        {/* Notes */}
+        <div className="mb-5">
+          <FormField
+            label="Muscle Group"
+            type="select"
+            value={draft.muscle_group}
+            options={MUSCLE_GROUPS.map((group) => ({
+              value: group,
+              label: formatLabel(group),
+            }))}
+            onChange={(value) =>
+              setDraft((current) => ({
+                ...current,
+                muscle_group: value as WorkoutDraft["muscle_group"],
+              }))
+            }
+          />
+        </div>
+
+        {/* Description */}
         <div className="mb-6">
           <label
             className="mb-2 block text-xs font-semibold uppercase tracking-wider"
             style={{ color: C.textMuted }}
           >
-            Notes
+            Description
           </label>
 
           <textarea
@@ -227,7 +308,7 @@ export function WorkoutFormPage() {
                 description: event.target.value,
               }))
             }
-            placeholder="How did the session go?"
+            placeholder="Describe your workout"
             rows={2}
             className="w-full resize-none rounded-2xl px-4 py-3 text-sm leading-relaxed outline-none"
             style={{

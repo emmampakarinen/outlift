@@ -40,3 +40,29 @@ export const CATEGORY_COLORS = {
     text: "#5B21B6",
   },
 };
+
+export const INTENSITY_COLORS = {
+  easy: {
+    background: "#EAF4FB",
+    border: "#C7E2F3",
+    text: "#285E7A",
+  },
+
+  moderate: {
+    background: "#FFF6D8",
+    border: "#F3D98A",
+    text: "#8A6415",
+  },
+
+  hard: {
+    background: "#FDEBD8",
+    border: "#F2C395",
+    text: "#9A5415",
+  },
+
+  "all-out": {
+    background: "#FDE8E8",
+    border: "#F3BBBB",
+    text: "#A33A3A",
+  },
+} as const;

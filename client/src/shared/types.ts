@@ -32,8 +32,11 @@ export interface Workout {
   user_id: number;
   location_id: number | null;
   name: string;
-  description: string;
+  description?: string;
   duration_minutes: number;
+  intensity?: WorkoutIntensity;
+  workout_type?: WorkoutType;
+  muscle_group?: MuscleGroup;
   created_at: string;
   exercises: WorkoutExercise[];
 }
@@ -43,6 +46,9 @@ export interface WorkoutDraft {
   name: string;
   description: string;
   duration_minutes: string;
+  intensity: WorkoutIntensity;
+  workout_type: WorkoutType;
+  muscle_group: MuscleGroup;
   exercises: WorkoutExercise[];
 }
 
@@ -52,6 +58,9 @@ export interface CreateWorkout {
   name: string;
   description: string;
   duration_minutes: number;
+  intensity: WorkoutIntensity;
+  workout_type: WorkoutType;
+  muscle_group: MuscleGroup;
   exercises: WorkoutExercise[];
 }
 
@@ -60,6 +69,11 @@ export interface UpdateWorkout {
   description?: string;
   duration_minutes?: number;
   location_id?: number;
+
+  intensity?: WorkoutIntensity;
+  workout_type?: WorkoutType;
+  muscle_group?: MuscleGroup;
+
   exercises?: WorkoutExercise[];
 }
 
@@ -130,3 +144,33 @@ export interface Coordinates {
   lat: number;
   lng: number;
 }
+
+export const WORKOUT_INTENSITIES = [
+  "easy",
+  "moderate",
+  "hard",
+  "all-out",
+] as const;
+
+export type WorkoutIntensity = (typeof WORKOUT_INTENSITIES)[number];
+
+export const WORKOUT_TYPES = [
+  "strength",
+  "hiit",
+  "cardio",
+  "mobility",
+  "endurance",
+  "circuit",
+  "mixed",
+] as const;
+
+export type WorkoutType = (typeof WORKOUT_TYPES)[number];
+
+export const MUSCLE_GROUPS = [
+  "full-body",
+  "upper-body",
+  "lower-body",
+  "core",
+] as const;
+
+export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
