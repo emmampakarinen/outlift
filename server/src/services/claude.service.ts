@@ -6,10 +6,6 @@ const anthropic = new Anthropic({
 });
 
 type GenerateWorkoutInput = {
-  location: {
-    name: string;
-    description?: string;
-  };
   equipment: {
     name: string;
     type: string;
@@ -36,10 +32,7 @@ export async function generateWorkout(input: GenerateWorkoutInput) {
     .join("\n");
 
   const prompt = `
-    Create a workout for the following location.
-
-    Location:
-    ${input.location.name}
+    Create a workout with the following information:
 
     Available equipment:
     ${equipmentList}

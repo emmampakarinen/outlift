@@ -6,13 +6,12 @@ import {
 } from "#services/locations.service.js";
 import { getExercises } from "#services/exercises.service.js";
 import { authenticateToken } from "#middleware/authMiddleware.js";
-import type { AuthRequest } from "#shared/types.js";
+import type { AuthRequest, GeneratedWorkout } from "#shared/types.js";
 
 const aiRouter: Router = Router();
 
 type Specs = {
   locationId: number;
-  userId: number;
   duration: number;
   intensity: string;
   workoutType: string;
@@ -28,12 +27,10 @@ aiRouter.post(
 
     const userId = req.user!.id;
 
-    const location = await getLocationById(locationId, userId);
     const equipment = await getLocationEquipment(locationId, userId);
     const exercises = await getExercises();
 
-    const workout = await generateWorkout({
-      location,
+    const generatedWorkout: GeneratedWorkout = await generateWorkout({
       equipment,
       exercises,
       preferences: {
@@ -44,7 +41,35 @@ aiRouter.post(
       },
     });
 
-    res.json(workout);
+    const mappedExercises = generatedWorkout.exercises.map(
+      (generatedExercise) => {
+        const exercise = exercises.find(
+          (exercise) => exercise.id === generatedExercise.exerciseId,
+        );
+
+        if (!exercise) {
+          throw new Error(`Exercise ${generatedExercise.exerciseId} not found`);
+        }
+
+        return {
+          exercise_id: exercise.id,
+          name: exercise.name,
+          category: exercise.category,
+          primary_muscle: exercise.primary_muscle,
+          sets: generatedExercise.sets,
+          reps: generatedExercise.reps,
+          weight: null,
+          restSeconds: generatedExercise.restSeconds,
+        };
+      },
+    );
+
+    return res.status(200).json({
+      name: generatedWorkout.name,
+      description: generatedWorkout.description,
+      duration_minutes: generatedWorkout.duration,
+      exercises: mappedExercises,
+    });
   },
 );
 

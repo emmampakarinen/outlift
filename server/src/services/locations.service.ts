@@ -113,7 +113,7 @@ export async function updateLocation(
 // get location equipment
 export async function getLocationEquipment(locationId: number, userId: number) {
   const result = await pool.query(
-    `SELECT equipment.id, equipment.name
+    `SELECT equipment.id, equipment.name, equipment.type
          FROM location_equipment
          INNER JOIN equipment
            ON location_equipment.equipment_id = equipment.id

@@ -11,7 +11,7 @@ import {
 
 import { deleteWorkout, getWorkoutById } from "../api/workouts";
 import type { Workout } from "../shared/types";
-import { useAppNavigation } from "../shared/helpers";
+import { formatLabel, useAppNavigation } from "../shared/helpers";
 import { C, CATEGORY_COLORS, INTENSITY_COLORS } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
@@ -55,12 +55,6 @@ export function WorkoutPage() {
 
     await deleteWorkout(workout.id, token);
     goBack();
-  }
-
-  function formatLabel(value: string) {
-    return value
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
   return (

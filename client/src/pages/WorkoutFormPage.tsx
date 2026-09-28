@@ -11,18 +11,15 @@ import type {
   WorkoutDraft,
 } from "../shared/types";
 
-import {
-  WORKOUT_INTENSITIES,
-  WORKOUT_TYPES,
-  MUSCLE_GROUPS,
-} from "../shared/types";
+import { WORKOUT_TYPES, MUSCLE_GROUPS } from "../shared/types";
 
 import { EditExercise } from "../components/EditExercise";
-import { useAppNavigation } from "../shared/helpers";
-import { C, INTENSITY_COLORS } from "../shared/colors";
+import { formatLabel, useAppNavigation } from "../shared/helpers";
+import { C } from "../shared/colors";
 import { useAuth } from "../contexts/useContext";
 import { BackButton } from "../components/BackButton";
 import { FormField } from "../components/FormField";
+import { IntensitySelector } from "../components/IntensitySelector";
 
 export function WorkoutFormPage() {
   const { locationId, workoutId } = useParams();
@@ -152,12 +149,6 @@ export function WorkoutFormPage() {
     goTo(`/workouts/${workoutId}/edit/exercises`, { draft });
   }
 
-  function formatLabel(value: string) {
-    return value
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  }
-
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
       {/* Header */}
@@ -225,34 +216,15 @@ export function WorkoutFormPage() {
             Intensity
           </label>
 
-          <div className="flex gap-2">
-            {WORKOUT_INTENSITIES.map((intensity) => {
-              const selected = draft.intensity === intensity;
-              const colors = INTENSITY_COLORS[intensity];
-
-              return (
-                <button
-                  key={intensity}
-                  type="button"
-                  onClick={() =>
-                    setDraft((current) => ({
-                      ...current,
-                      intensity,
-                    }))
-                  }
-                  className="min-w-0 flex-1 rounded-2xl px-1.5 py-3 text-xs font-semibold transition sm:text-sm"
-                  style={{
-                    background: selected ? colors.background : C.card,
-                    border: `1px solid ${selected ? colors.border : C.border}`,
-                    color: selected ? colors.text : C.textSub,
-                    boxShadow: selected ? `0 0 0 1px ${colors.border}` : "none",
-                  }}
-                >
-                  {formatLabel(intensity)}
-                </button>
-              );
-            })}
-          </div>
+          <IntensitySelector
+            value={draft.intensity}
+            onChange={(intensity) =>
+              setDraft((current) => ({
+                ...current,
+                intensity,
+              }))
+            }
+          />
         </div>
 
         <div className="mb-4">

@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { Dumbbell, MapPin, Sparkles } from "lucide-react";
 import { useParams } from "react-router-dom";
 
-import type { Location, LocationEquipment, Workout } from "../shared/types";
+import type {
+  GenerateWorkoutSpecs,
+  Location,
+  LocationEquipment,
+  Workout,
+  WorkoutDraft,
+} from "../shared/types";
 import { getWorkoutsByLocation } from "../api/workouts";
 import {
   deleteLocation,
@@ -18,6 +24,8 @@ import { StatCard } from "../components/StatCard";
 import { EquipmentChips } from "../components/EquipmentChips";
 import { LocationMap } from "../components/LocationMap";
 import { APIProvider } from "@vis.gl/react-google-maps";
+import { GenerateWorkoutModal } from "../components/modals/GenerateWorkoutModal";
+import { generateWorkout } from "../api/ai";
 
 export function LocationPage() {
   const { locationId } = useParams();
@@ -29,6 +37,15 @@ export function LocationPage() {
   const [locationEquipment, setLocationEquipment] = useState<
     LocationEquipment[]
   >([]);
+  const [showGenerateModal, setShowGenerateModal] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const [generateSpecs, setGenerateSpecs] = useState<GenerateWorkoutSpecs>({
+    duration_minutes: 45,
+    intensity: "moderate",
+    workoutType: "strength",
+    muscleGroup: "full-body",
+  });
 
   useEffect(() => {
     if (!locationId) return;
@@ -60,7 +77,42 @@ export function LocationPage() {
     goBack();
   }
 
-  // TODO use locationmap-component here
+  async function handleGenerateWorkout() {
+    try {
+      setIsGenerating(true);
+
+      const generatedWorkout = await generateWorkout(
+        {
+          ...generateSpecs,
+          locationId: location.id,
+        },
+        token,
+      );
+
+      const draft: WorkoutDraft = {
+        location_id: location.id,
+
+        name: generatedWorkout.name,
+        description: generatedWorkout.description,
+        duration_minutes: String(generatedWorkout.duration_minutes),
+
+        intensity: generateSpecs.intensity,
+        workout_type: generateSpecs.workoutType,
+        muscle_group: generateSpecs.muscleGroup,
+
+        exercises: generatedWorkout.exercises,
+      };
+
+      setShowGenerateModal(false);
+
+      goTo(`/locations/${location.id}/workouts/new`, {
+        draft,
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
       {/* Hero */}
@@ -134,7 +186,7 @@ export function LocationPage() {
         <div className="mt-6 flex flex-col gap-3">
           <button
             type="button"
-            onClick={() => goTo(`/locations/${locationId}/workouts/generate`)}
+            onClick={() => setShowGenerateModal(true)}
             className="w-full rounded-2xl py-4 text-sm font-semibold"
             style={{
               background: C.forest,
@@ -232,6 +284,15 @@ export function LocationPage() {
           Delete Location
         </button>
       </div>
+      {showGenerateModal && (
+        <GenerateWorkoutModal
+          specs={generateSpecs}
+          onChange={setGenerateSpecs}
+          onClose={() => setShowGenerateModal(false)}
+          onGenerate={handleGenerateWorkout}
+          isGenerating={isGenerating}
+        />
+      )}
     </main>
   );
 }

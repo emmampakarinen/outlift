@@ -97,3 +97,15 @@ export const MUSCLE_GROUPS = [
 ] as const;
 
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
+
+export type GeneratedWorkout = {
+  name: string;
+  description: string;
+  duration: number;
+  exercises: {
+    exerciseId: number;
+    sets: number;
+    reps: number;
+    restSeconds: number;
+  }[];
+};

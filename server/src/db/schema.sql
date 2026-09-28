@@ -82,7 +82,8 @@ CREATE TABLE workout_exercise (
     exercise_id INTEGER NOT NULL REFERENCES exercises (id),
     sets INTEGER NOT NULL,
     reps INTEGER NOT NULL,
-    weight DECIMAL
+    weight DECIMAL,
+    rest_seconds INTEGER
 );
 
 CREATE TABLE equipment (

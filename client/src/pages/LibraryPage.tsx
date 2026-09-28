@@ -59,6 +59,7 @@ export function LibraryPage() {
     setSelectedCategory("All");
   }
 
+  // TODO pass the location name to workoutcard
   return (
     <main className="min-h-full" style={{ background: C.bg }}>
       <div className="px-5 pt-7 pb-4">

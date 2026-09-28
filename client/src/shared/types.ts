@@ -18,6 +18,7 @@ export interface WorkoutExercise {
   sets: number;
   reps: number;
   weight: number | null;
+  restSeconds: number | null;
 }
 
 export interface Exercise {
@@ -174,3 +175,21 @@ export const MUSCLE_GROUPS = [
 ] as const;
 
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
+
+export interface GenerateWorkoutSpecs {
+  duration_minutes: number;
+  intensity: WorkoutDraft["intensity"];
+  workoutType: WorkoutDraft["workout_type"];
+  muscleGroup: WorkoutDraft["muscle_group"];
+}
+
+export type GenerateWorkoutInput = GenerateWorkoutSpecs & {
+  locationId: number;
+};
+
+export interface GeneratedWorkout {
+  name: string;
+  description: string;
+  duration_minutes: number;
+  exercises: WorkoutExercise[];
+}
