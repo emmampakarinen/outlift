@@ -106,11 +106,8 @@ export function WorkoutPage() {
         <div className="flex flex-wrap items-center gap-1.5">
           <MapPin size={12} style={{ color: C.textFaint }} />
 
-          {/** TODO show address/location name instead of location id */}
           <span className="text-sm" style={{ color: C.textMuted }}>
-            {workout.location_id
-              ? `Location #${workout.location_id}`
-              : "No location"}
+            {workout.location ? `${workout.location.name}` : "No location"}
           </span>
 
           <span style={{ color: "#D1D5DB" }}>·</span>

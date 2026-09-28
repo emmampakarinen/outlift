@@ -59,7 +59,6 @@ export function LibraryPage() {
     setSelectedCategory("All");
   }
 
-  // TODO pass the location name to workoutcard
   return (
     <main className="min-h-full" style={{ background: C.bg }}>
       <div className="px-5 pt-7 pb-4">
@@ -180,7 +179,11 @@ export function LibraryPage() {
           ) : (
             <div className="flex flex-col gap-3">
               {filteredWorkouts.map((workout) => (
-                <WorkoutCard key={workout.id} workout={workout} />
+                <WorkoutCard
+                  key={workout.id}
+                  workout={workout}
+                  locationName={workout.location.name}
+                />
               ))}
             </div>
           )

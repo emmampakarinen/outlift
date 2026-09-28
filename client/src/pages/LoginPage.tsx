@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,14 +6,22 @@ import { AuthField } from "../components/AuthField";
 import { C } from "../shared/colors";
 import { loginUser } from "../api/users";
 import { useAuth } from "../contexts/useContext";
+import { useAppNavigation } from "../shared/helpers";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, token } = useAuth();
+  const { goTo } = useAppNavigation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      goTo("/home");
+    }
+  }, [goTo, token]);
 
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();

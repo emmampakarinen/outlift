@@ -39,6 +39,10 @@ export interface Workout {
   workout_type?: WorkoutType;
   muscle_group?: MuscleGroup;
   created_at: string;
+  location?: {
+    id: number;
+    name: string;
+  };
   exercises: WorkoutExercise[];
 }
 

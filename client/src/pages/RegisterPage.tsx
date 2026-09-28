@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { AuthField } from "../components/AuthField";
 import { C } from "../shared/colors";
 import { registerUser } from "../api/users";
+import { useAuth } from "../contexts/useContext";
+import { useAppNavigation } from "../shared/helpers";
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const { token } = useAuth();
+  const { goTo } = useAppNavigation();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -16,6 +20,12 @@ export function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      goTo("/home");
+    }
+  }, [goTo, token]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

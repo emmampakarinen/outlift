@@ -1,4 +1,4 @@
-import { Clock, Dumbbell } from "lucide-react";
+import { Clock, Dumbbell, MapPin } from "lucide-react";
 import type { Workout } from "../shared/types";
 import { C } from "../shared/colors";
 import { useAppNavigation } from "../shared/helpers";
@@ -39,10 +39,12 @@ export function WorkoutCard({ workout, locationName }: Props) {
         >
           {workout.name}
         </h3>
-
-        <p className="mt-0.5 truncate text-xs" style={{ color: C.textMuted }}>
-          {locationName || "Unknown location"}
-        </p>
+        <div className="flex flex-row gap-1 items-center">
+          <MapPin size={12} color="gray" />
+          <p className="mt-0.5 truncate text-xs" style={{ color: C.textMuted }}>
+            {locationName || "Unknown location"}
+          </p>
+        </div>
       </div>
 
       <div

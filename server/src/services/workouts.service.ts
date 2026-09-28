@@ -4,7 +4,14 @@ import pool from "../db/db.js";
 // get user's workouts
 export async function getUserWorkout(userId: number) {
   const workoutResult = await pool.query(
-    "SELECT * FROM workouts WHERE user_id = $1",
+    `
+      SELECT
+        w.*,
+        l.name AS location_name
+      FROM workouts w
+      JOIN locations l ON l.id = w.location_id
+      WHERE w.user_id = $1
+    `,
     [userId],
   );
 
@@ -31,6 +38,10 @@ export async function getUserWorkout(userId: number) {
 
     workoutsWithExercises.push({
       ...workout,
+      location: {
+        id: workout.location_id,
+        name: workout.location_name,
+      },
       exercises: exerciseResult.rows,
     });
   }
@@ -41,35 +52,49 @@ export async function getUserWorkout(userId: number) {
 // get workout by id
 export async function getWorkoutById(userId: number, workoutId: number) {
   const workoutResult = await pool.query(
-    `SELECT *
-         FROM workouts
-         WHERE id = $1
-           AND user_id = $2`,
-    [workoutId, userId],
+    `
+      SELECT
+        w.*,
+        l.name AS location_name
+      FROM workouts w
+      JOIN locations l ON l.id = w.location_id
+      WHERE w.user_id = $1 AND w.id = $2
+    `,
+    [userId, workoutId],
   );
 
   if (workoutResult.rows.length === 0) {
     return false;
   }
 
+  const workout = workoutResult.rows[0];
+
   const exerciseResult = await pool.query(
-    `SELECT
-          we.id,
-          we.sets,
-          we.reps,
-          we.weight,
-          e.id AS exercise_id,
-          e.name,
-          e.category,
-          e.primary_muscle
-        FROM workout_exercise we
-        JOIN exercises e ON e.id = we.exercise_id
-        WHERE we.workout_id = $1`,
+    `
+      SELECT
+        we.id,
+        we.sets,
+        we.reps,
+        we.weight,
+        e.id AS exercise_id,
+        e.name,
+        e.category,
+        e.primary_muscle
+      FROM workout_exercise we
+      JOIN exercises e ON e.id = we.exercise_id
+      WHERE we.workout_id = $1
+    `,
     [workoutId],
   );
 
+  const { location_name, ...workoutData } = workout;
+
   return {
-    ...workoutResult.rows[0],
+    ...workoutData,
+    location: {
+      id: workout.location_id,
+      name: location_name,
+    },
     exercises: exerciseResult.rows,
   };
 }

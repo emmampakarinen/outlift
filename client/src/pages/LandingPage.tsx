@@ -1,8 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { C } from "../shared/colors";
+import { useAuth } from "../contexts/useContext";
+import { useAppNavigation } from "../shared/helpers";
+import { useEffect } from "react";
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const { token } = useAuth();
+  const { goTo } = useAppNavigation();
+
+  useEffect(() => {
+    if (token) {
+      goTo("/home");
+    }
+  }, [goTo, token]);
 
   return (
     <main
@@ -54,7 +65,7 @@ export function LandingPage() {
           </h1>
 
           <p
-            className="mb-10 max-w-[280px] text-base leading-relaxed"
+            className="mb-10 max-w-70 text-base leading-relaxed"
             style={{ color: "rgba(255,255,255,0.6)" }}
           >
             Discover outdoor training spots, log your workouts, and track
