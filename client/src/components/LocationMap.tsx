@@ -4,7 +4,9 @@ import { MapPin } from "lucide-react";
 import { C } from "../shared/colors";
 import { useUserLocation } from "../contexts/useContext";
 import type { Coordinates, Location } from "../shared/types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAppNavigation } from "../shared/helpers";
+import { LocationPopup } from "./LocationPopUp";
 
 type LocationMapProps = {
   locations?: Location[];
@@ -15,14 +17,28 @@ type LocationMapProps = {
   className?: string;
 };
 
-function RecenterMap({ position }: { position: Coordinates | null }) {
+function RecenterMap({
+  position,
+  offset = false,
+}: {
+  position: Coordinates | null;
+  offset?: boolean;
+}) {
   const map = useMap();
 
   useEffect(() => {
     if (!map || !position) return;
 
     map.panTo(position);
-  }, [map, position]);
+
+    if (offset) {
+      const timeout = setTimeout(() => {
+        map.panBy(0, -80);
+      }, 200);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [map, position, offset]);
 
   return null;
 }
@@ -36,6 +52,10 @@ export function LocationMap({
   className = "h-full w-full",
 }: LocationMapProps) {
   const { userLocation } = useUserLocation();
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null,
+  );
+  const { goTo } = useAppNavigation();
 
   const fallbackCenter: Coordinates = focusPosition ??
     userLocation ?? {
@@ -63,6 +83,17 @@ export function LocationMap({
     }
   }
 
+  function handleLocationClick(location: Location) {
+    setSelectedLocation(location);
+  }
+
+  const selectedLocationPosition: Coordinates | null = selectedLocation
+    ? {
+        lat: Number(selectedLocation.latitude),
+        lng: Number(selectedLocation.longitude),
+      }
+    : null;
+
   return (
     <Map
       defaultCenter={fallbackCenter}
@@ -87,9 +118,14 @@ export function LocationMap({
       }
     >
       <RecenterMap
-        position={selectedPosition?.position ?? focusPosition ?? null}
+        position={
+          selectedLocationPosition ??
+          selectedPosition?.position ??
+          focusPosition ??
+          null
+        }
+        offset={!!selectedLocation}
       />
-
       {userLocation && interactive && (
         <AdvancedMarker position={userLocation} title="Your location">
           <div
@@ -101,27 +137,42 @@ export function LocationMap({
         </AdvancedMarker>
       )}
 
-      {locations.map((location) => (
-        <AdvancedMarker
-          key={location.id}
-          position={{
-            lat: Number(location.latitude),
-            lng: Number(location.longitude),
-          }}
-          title={location.name}
-        >
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-full shadow-md"
-            style={{
-              background: C.forest,
-              color: "white",
-              border: "2px solid white",
+      {locations.map((location) => {
+        const isSelected = selectedLocation?.id === location.id;
+
+        return (
+          <AdvancedMarker
+            key={location.id}
+            position={{
+              lat: Number(location.latitude),
+              lng: Number(location.longitude),
             }}
+            title={location.name}
+            onClick={() => handleLocationClick(location)}
           >
-            <MapPin size={18} />
-          </div>
-        </AdvancedMarker>
-      ))}
+            <div className="relative">
+              {isSelected && (
+                <LocationPopup
+                  location={location}
+                  onClose={() => setSelectedLocation(null)}
+                  onOpenLocation={() => goTo(`/locations/${location.id}`)}
+                />
+              )}
+
+              <div
+                className="flex h-9 w-9 items-center justify-center rounded-full shadow-md"
+                style={{
+                  background: C.forest,
+                  color: "white",
+                  border: "2px solid white",
+                }}
+              >
+                <MapPin size={18} />
+              </div>
+            </div>
+          </AdvancedMarker>
+        );
+      })}
 
       {selectedPosition && (
         <AdvancedMarker
