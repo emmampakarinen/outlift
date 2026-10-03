@@ -60,8 +60,8 @@ export function LibraryPage() {
   }
 
   return (
-    <main className="min-h-full" style={{ background: C.bg }}>
-      <div className="px-5 pt-7 pb-4">
+    <main className="flex flex-col h-full min-h-0" style={{ background: C.bg }}>
+      <div className="shrink-0 px-5 pt-7 pb-4">
         <h1
           className="mb-4 text-2xl font-bold"
           style={{
@@ -140,7 +140,7 @@ export function LibraryPage() {
 
       {/* Exercise categories */}
       {activeTab === "exercises" && (
-        <div className="no-scrollbar flex gap-2 overflow-x-auto px-5 pb-3">
+        <div className="no-scrollbar flex shrink-0 gap-2 overflow-x-auto px-5 pb-3">
           {categories.map((category) => {
             const isSelected = selectedCategory === category;
 
@@ -164,7 +164,7 @@ export function LibraryPage() {
       )}
 
       {/* Content */}
-      <div className="px-5 pb-6">
+      <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto px-5 pb-6">
         {activeTab === "workouts" ? (
           filteredWorkouts.length === 0 ? (
             <div className="py-10 text-center">

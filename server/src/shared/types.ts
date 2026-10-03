@@ -10,9 +10,9 @@ export interface User {
   email: string;
   password_hash: string;
   username: string;
-  profile_picture_url?: string;
-  profile_description?: string;
-  created_at: Date;
+  profilePictureUrl?: string;
+  profileDescription?: string;
+  createdAt: Date;
 }
 
 export interface CreateLocation {
@@ -23,19 +23,33 @@ export interface CreateLocation {
   latitude: number;
   longitude: number;
   equipmentIds: number[];
+  isPublic: boolean;
+}
+
+export interface LocationRow {
+  id: number;
+  name: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  description: string | null;
+  type: string | null;
+  is_public: boolean;
+  created_by: number;
+  created_at: Date;
 }
 
 export interface CreateWorkout {
-  user_id: number;
-  location_id: number;
+  userId: number;
+  locationId: number;
   name: string;
   description?: string;
-  duration_minutes?: number;
+  durationMinutes?: number;
   intensity: WorkoutIntensity;
-  workout_type: WorkoutType;
-  muscle_group: MuscleGroup;
+  workoutType: WorkoutType;
+  muscleGroup: MuscleGroup;
   exercises: {
-    exercise_id: number;
+    exerciseId: number;
     sets: number;
     reps: number;
     weight?: number;
@@ -45,14 +59,14 @@ export interface CreateWorkout {
 export interface UpdateWorkout {
   name?: string;
   description?: string;
-  duration_minutes?: number;
-  location_id?: number;
+  durationMinutes?: number;
+  locationId?: number;
   intensity?: WorkoutIntensity;
-  workout_type?: WorkoutType;
-  muscle_group?: MuscleGroup;
+  workoutType?: WorkoutType;
+  muscleGroup?: MuscleGroup;
   exercises?: {
     id: number; // workout_exercise row id
-    exercise_id: number; // exercise id
+    exerciseId: number; // exercise id
     sets?: number;
     reps?: number;
     weight?: number;

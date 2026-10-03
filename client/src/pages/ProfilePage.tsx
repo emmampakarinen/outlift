@@ -22,14 +22,14 @@ function ProfilePage() {
 
   const stats = useMemo(() => {
     const totalMinutes = workouts.reduce(
-      (sum, workout) => sum + workout.duration_minutes,
+      (sum, workout) => sum + workout.durationMinutes,
       0,
     );
 
     const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
 
     const uniqueLocations = new Set(
-      workouts.map((workout) => workout.location_id),
+      workouts.map((workout) => workout.locationId),
     );
 
     return {
@@ -67,9 +67,9 @@ function ProfilePage() {
             border: `3px solid ${C.sageLight}`,
           }}
         >
-          {user?.profile_picture_url ? (
+          {user?.profilePictureUrl ? (
             <img
-              src={user.profile_picture_url}
+              src={user.profilePictureUrl}
               alt={user.username}
               className="h-full w-full object-cover"
             />
@@ -84,7 +84,7 @@ function ProfilePage() {
         </h2>
 
         <p className="mb-5 text-sm text-center" style={{ color: C.textMuted }}>
-          {user?.profile_description || "Outdoor fitness enthusiast"}
+          {user?.profileDescription || "Outdoor fitness enthusiast"}
         </p>
 
         {/* Stats */}

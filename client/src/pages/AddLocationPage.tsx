@@ -15,6 +15,7 @@ import { InputField } from "../components/InputField";
 import { EquipmentChips } from "../components/EquipmentChips";
 import { AddressAutocomplete } from "../components/AddressAutoComplete";
 import { LocationMap } from "../components/LocationMap";
+import IsPublicButton from "../components/IsPublicButton";
 
 export function AddLocationPage() {
   const { goBack } = useAppNavigation();
@@ -22,6 +23,8 @@ export function AddLocationPage() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
+  const [showAllEquipment, setShowAllEquipment] = useState(false);
 
   const [selectedPosition, setSelectedPosition] = useState<{
     position: Coordinates;
@@ -42,6 +45,10 @@ export function AddLocationPage() {
   }, [token]);
 
   const canSave = name.trim().length > 0 && selectedPosition !== null;
+
+  const visibleEquipment = showAllEquipment
+    ? equipment
+    : equipment.slice(0, 10);
 
   function toggleEquipment(item: Equipment) {
     setSelectedEquipment((current) => {
@@ -67,6 +74,7 @@ export function AddLocationPage() {
         address: address,
         latitude: selectedPosition.position.lat,
         longitude: selectedPosition.position.lng,
+        isPublic: isPublic,
       },
       token,
     );
@@ -188,6 +196,7 @@ export function AddLocationPage() {
           </section>
         </APIProvider>
 
+        {/* Description */}
         <section className="mb-6">
           <label
             className="mb-2 block text-xs font-semibold uppercase tracking-wider"
@@ -210,6 +219,19 @@ export function AddLocationPage() {
           />
         </section>
 
+        {/* Visibility */}
+        <section className="mb-6">
+          <label
+            className="mb-2 block text-xs font-semibold uppercase tracking-wider"
+            style={{ color: C.textMuted }}
+          >
+            Visibility
+          </label>
+
+          <IsPublicButton isPublic={isPublic} setIsPublic={setIsPublic} />
+        </section>
+
+        {/* Equipment */}
         <section className="mb-8">
           <label
             className="mb-1 block text-xs font-semibold uppercase tracking-wider"
@@ -223,12 +245,25 @@ export function AddLocationPage() {
           </p>
 
           <EquipmentChips
-            equipment={equipment}
+            equipment={visibleEquipment}
             selectedEquipment={selectedEquipment}
             onToggle={toggleEquipment}
           />
 
-          <div className="flex gap-2 mt-5">
+          {equipment.length > 10 && (
+            <button
+              type="button"
+              onClick={() => setShowAllEquipment((current) => !current)}
+              className="mt-3 text-sm font-medium"
+              style={{ color: C.forest }}
+            >
+              {showAllEquipment
+                ? "Show less"
+                : `Show all equipment (${equipment.length})`}
+            </button>
+          )}
+
+          <div className="mt-5 flex gap-2">
             <input
               value={customInput}
               onChange={(event) => setCustomInput(event.target.value)}

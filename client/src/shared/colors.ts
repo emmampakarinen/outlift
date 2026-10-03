@@ -5,6 +5,9 @@ export const C = {
   sagePale: "#C5D9C7",
   sageLight: "#E8F5EE",
 
+  community: "#D89B62",
+  communityLight: "#FBF0E4",
+
   bg: "#F7F9F7",
   card: "#FFFFFF",
   border: "#E4EDE7",
@@ -18,6 +21,7 @@ export const C = {
   danger: "#EF4444",
   dangerLight: "#FEF2F2",
 };
+
 export const CATEGORY_COLORS = {
   "Upper Body": {
     background: "#DBEAFE",

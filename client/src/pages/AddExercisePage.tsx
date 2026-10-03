@@ -50,13 +50,13 @@ export function AddExercisePage() {
   }, [exercises]);
 
   const addedExerciseIds = new Set(
-    draft?.exercises.map((exercise: WorkoutExercise) => exercise.exercise_id) ??
+    draft?.exercises.map((exercise: WorkoutExercise) => exercise.exerciseId) ??
       [],
   );
 
   function handleAddExercise(exercise: Exercise) {
     const alreadyExists = draft.exercises.some(
-      (item: WorkoutExercise) => item.exercise_id === exercise.id,
+      (item: WorkoutExercise) => item.exerciseId === exercise.id,
     );
 
     const updatedExercises = alreadyExists
@@ -67,7 +67,7 @@ export function AddExercisePage() {
             exercise_id: exercise.id,
             name: exercise.name,
             category: exercise.category,
-            primary_muscle: exercise.primary_muscle,
+            primary_muscle: exercise.primaryMuscle,
             sets: 1,
             reps: 0,
             weight: null,

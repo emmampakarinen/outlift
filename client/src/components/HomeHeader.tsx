@@ -52,9 +52,9 @@ export function HomeHeader() {
           border: `2px solid ${C.border}`,
         }}
       >
-        {user?.profile_picture_url ? (
+        {user?.profilePictureUrl ? (
           <img
-            src={user.profile_picture_url}
+            src={user.profilePictureUrl}
             alt={user.username}
             className="h-full w-full object-cover"
           />

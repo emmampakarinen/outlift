@@ -16,6 +16,7 @@ CREATE TABLE locations (
     latitude DECIMAL,
     longitude DECIMAL,
     description VARCHAR(255),
+    is_public BOOLEAN DEFAULT FALSE,
     created_by INTEGER NOT NULL REFERENCES users (id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,13 +1,13 @@
+import { mapLocation } from "#utils/helpers.js";
 import pool from "../db/db.js";
 
-// get user's locations
-export async function getUserLocations(userId: number) {
-  const locations = await pool.query(
-    "SELECT * FROM locations WHERE created_by = $1",
+// both user's and public locations
+export async function getLocations(userId: number) {
+  const result = await pool.query(
+    "SELECT * FROM locations WHERE created_by = $1 OR is_public = true",
     [userId],
   );
-
-  return locations.rows;
+  return result.rows.map(mapLocation);
 }
 
 // get location by id
@@ -16,11 +16,12 @@ export async function getLocationById(locationId: number, userId: number) {
     `SELECT *
          FROM locations
          WHERE id = $1
-           AND created_by = $2`,
+           AND (created_by = $2 OR is_public = true)`,
     [locationId, userId],
   );
+  const row = result.rows[0];
 
-  return result.rows[0];
+  return row ? mapLocation(row) : undefined;
 }
 
 // create location
@@ -30,15 +31,16 @@ export async function createLocation(
   latitude: number,
   longitude: number,
   userId: number,
+  isPublic: boolean,
   type?: string,
   description?: string,
 ) {
   const newLocation = await pool.query(
     `INSERT INTO locations
-          (name, address, type, latitude, longitude, description, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+          (name, address, type, latitude, longitude, description, is_public, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
          RETURNING *`,
-    [name, address, type, latitude, longitude, description, userId],
+    [name, address, type, latitude, longitude, description, isPublic, userId],
   );
 
   return newLocation.rows[0];
@@ -95,16 +97,18 @@ export async function updateLocation(
   userId: number,
   name: string,
   description: string,
+  isPublic: boolean,
 ) {
   const result = await pool.query(
     `UPDATE locations
          SET
            name = COALESCE($1, name),
-           description = COALESCE($2, description)
-         WHERE id = $3
-           AND created_by = $4
+           description = COALESCE($2, description),
+           is_public = $3
+         WHERE id = $4
+           AND created_by = $5
          RETURNING *`,
-    [name, description, locationId, userId],
+    [name, description, isPublic, locationId, userId],
   );
 
   return result.rows[0];
@@ -120,7 +124,7 @@ export async function getLocationEquipment(locationId: number, userId: number) {
          INNER JOIN locations
            ON locations.id = location_equipment.location_id
          WHERE location_equipment.location_id = $1
-           AND locations.created_by = $2`,
+           AND (locations.created_by = $2 OR locations.is_public = true)`,
     [locationId, userId],
   );
 

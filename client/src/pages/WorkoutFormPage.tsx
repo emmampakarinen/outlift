@@ -33,15 +33,15 @@ export function WorkoutFormPage() {
 
   const [draft, setDraft] = useState<WorkoutDraft>(() => ({
     name: location.state?.draft?.name ?? "",
-    duration_minutes: location.state?.draft?.duration_minutes ?? "",
+    durationMinutes: location.state?.draft?.durationMinutes ?? "",
     description: location.state?.draft?.description ?? "",
 
     intensity: location.state?.draft?.intensity ?? "moderate",
-    workout_type: location.state?.draft?.workout_type ?? "strength",
-    muscle_group: location.state?.draft?.muscle_group ?? "full-body",
+    workoutType: location.state?.draft?.workoutType ?? "strength",
+    muscleGroup: location.state?.draft?.muscleGroup ?? "full-body",
 
     exercises: location.state?.draft?.exercises ?? [],
-    location_id: Number(locationId),
+    locationId: Number(locationId),
   }));
 
   useEffect(() => {
@@ -53,15 +53,15 @@ export function WorkoutFormPage() {
       if (!location.state?.draft) {
         setDraft({
           name: data.name,
-          duration_minutes: String(data.duration_minutes),
+          durationMinutes: String(data.durationMinutes),
           description: data.description ?? "",
 
           intensity: data.intensity,
-          workout_type: data.workout_type,
-          muscle_group: data.muscle_group,
+          workoutType: data.workoutType,
+          muscleGroup: data.muscleGroup,
 
           exercises: data.exercises,
-          location_id: data.location_id,
+          locationId: data.locationId,
         });
       }
     });
@@ -74,15 +74,15 @@ export function WorkoutFormPage() {
   async function handleWorkoutSave() {
     if (isCreateMode) {
       const newWorkout: CreateWorkout = {
-        user_id: 1,
-        location_id: draft.location_id,
+        userId: 1,
+        locationId: draft.locationId,
         name: draft.name,
         description: draft.description,
-        duration_minutes: Number(draft.duration_minutes),
+        durationMinutes: Number(draft.durationMinutes),
 
         intensity: draft.intensity,
-        workout_type: draft.workout_type,
-        muscle_group: draft.muscle_group,
+        workoutType: draft.workoutType,
+        muscleGroup: draft.muscleGroup,
 
         exercises: draft.exercises,
       };
@@ -98,12 +98,12 @@ export function WorkoutFormPage() {
     const updatedWorkout: UpdateWorkout = {
       name: draft.name,
       description: draft.description,
-      duration_minutes: Number(draft.duration_minutes),
-      location_id: draft.location_id ?? undefined,
+      durationMinutes: Number(draft.durationMinutes),
+      locationId: draft.locationId ?? undefined,
 
       intensity: draft.intensity,
-      workout_type: draft.workout_type,
-      muscle_group: draft.muscle_group,
+      workoutType: draft.workoutType,
+      muscleGroup: draft.muscleGroup,
 
       exercises: draft.exercises,
     };
@@ -121,7 +121,7 @@ export function WorkoutFormPage() {
     setDraft((current) => ({
       ...current,
       exercises: current.exercises.map((exercise) =>
-        exercise.exercise_id === exerciseId
+        exercise.exerciseId === exerciseId
           ? {
               ...exercise,
               [field]: value,
@@ -135,7 +135,7 @@ export function WorkoutFormPage() {
     setDraft((current) => ({
       ...current,
       exercises: current.exercises.filter(
-        (exercise) => exercise.exercise_id !== exerciseId,
+        (exercise) => exercise.exerciseId !== exerciseId,
       ),
     }));
   }
@@ -198,7 +198,7 @@ export function WorkoutFormPage() {
             label="Duration (minutes)"
             type="number"
             min={1}
-            value={draft.duration_minutes}
+            value={draft.durationMinutes}
             onChange={(value) =>
               setDraft((current) => ({
                 ...current,
@@ -231,7 +231,7 @@ export function WorkoutFormPage() {
           <FormField
             label="Workout Type"
             type="select"
-            value={draft.workout_type}
+            value={draft.workoutType}
             options={WORKOUT_TYPES.map((type) => ({
               value: type,
               label: formatLabel(type),
@@ -239,7 +239,7 @@ export function WorkoutFormPage() {
             onChange={(value) =>
               setDraft((current) => ({
                 ...current,
-                workout_type: value as WorkoutDraft["workout_type"],
+                workout_type: value as WorkoutDraft["workoutType"],
               }))
             }
           />
@@ -249,7 +249,7 @@ export function WorkoutFormPage() {
           <FormField
             label="Muscle Group"
             type="select"
-            value={draft.muscle_group}
+            value={draft.muscleGroup}
             options={MUSCLE_GROUPS.map((group) => ({
               value: group,
               label: formatLabel(group),
@@ -257,7 +257,7 @@ export function WorkoutFormPage() {
             onChange={(value) =>
               setDraft((current) => ({
                 ...current,
-                muscle_group: value as WorkoutDraft["muscle_group"],
+                muscle_group: value as WorkoutDraft["muscleGroup"],
               }))
             }
           />
@@ -306,7 +306,7 @@ export function WorkoutFormPage() {
         <div className="flex flex-col gap-3">
           {draft.exercises.map((exercise) => (
             <EditExercise
-              key={exercise.exercise_id}
+              key={exercise.exerciseId}
               exercise={exercise}
               onChange={handleExerciseChange}
               onDelete={handleExerciseDelete}

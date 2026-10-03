@@ -113,7 +113,7 @@ export function WorkoutPage() {
           <span style={{ color: "#D1D5DB" }}>·</span>
 
           <span className="text-sm" style={{ color: C.textMuted }}>
-            {new Date(workout.created_at).toLocaleDateString()}
+            {new Date(workout.createdAt).toLocaleDateString()}
           </span>
         </div>
       </section>
@@ -128,11 +128,11 @@ export function WorkoutPage() {
         </InfoChip>
 
         <InfoChip background={C.muted} color={C.textSub} border={C.border}>
-          {formatLabel(workout.muscle_group)}
+          {formatLabel(workout.muscleGroup)}
         </InfoChip>
 
         <InfoChip background={C.sageLight} color={C.forest}>
-          {formatLabel(workout.workout_type)}
+          {formatLabel(workout.workoutType)}
         </InfoChip>
       </div>
 
@@ -140,7 +140,7 @@ export function WorkoutPage() {
       <section className="mt-5 grid grid-cols-3 gap-3">
         <StatCard
           label="Duration"
-          value={`${workout.duration_minutes}m`}
+          value={`${workout.durationMinutes}m`}
           icon={<Clock3 size={16} />}
         />
 

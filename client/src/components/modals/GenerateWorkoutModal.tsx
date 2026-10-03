@@ -26,7 +26,7 @@ export function GenerateWorkoutModal({
   onGenerate,
   isGenerating = false,
 }: GenerateWorkoutModalProps) {
-  const canGenerate = Number(specs.duration_minutes) > 0 && !isGenerating;
+  const canGenerate = Number(specs.durationMinutes) > 0 && !isGenerating;
 
   return (
     <div
@@ -86,11 +86,11 @@ export function GenerateWorkoutModal({
             label="Duration (minutes)"
             type="number"
             min={1}
-            value={specs.duration_minutes}
+            value={specs.durationMinutes}
             onChange={(value) =>
               onChange({
                 ...specs,
-                duration_minutes: Number(value),
+                durationMinutes: Number(value),
               })
             }
           />
@@ -129,7 +129,7 @@ export function GenerateWorkoutModal({
             onChange={(value) =>
               onChange({
                 ...specs,
-                workoutType: value as WorkoutDraft["workout_type"],
+                workoutType: value as WorkoutDraft["workoutType"],
               })
             }
           />
@@ -148,7 +148,7 @@ export function GenerateWorkoutModal({
             onChange={(value) =>
               onChange({
                 ...specs,
-                muscleGroup: value as WorkoutDraft["muscle_group"],
+                muscleGroup: value as WorkoutDraft["muscleGroup"],
               })
             }
           />

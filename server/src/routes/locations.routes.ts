@@ -7,13 +7,13 @@ import {
   deleteLocation,
   getLocationById,
   getLocationEquipment,
-  getUserLocations,
+  getLocations,
   updateLocation,
 } from "#services/locations.service.js";
 
 const locationRouter: Router = Router();
 
-// get user's locations
+// get user's and shared locations
 locationRouter.get(
   "/",
   authenticateToken,
@@ -21,7 +21,7 @@ locationRouter.get(
     const userId = req.user!.id;
 
     try {
-      const locations = await getUserLocations(userId);
+      const locations = await getLocations(userId);
 
       return res.json(locations);
     } catch (error) {
@@ -61,7 +61,7 @@ locationRouter.post(
   async (req: AuthRequest, res: Response) => {
     const userId = req.user!.id;
 
-    const { name, address, type, latitude, longitude, description } =
+    const { name, address, type, latitude, longitude, description, isPublic } =
       req.body as CreateLocation;
 
     try {
@@ -71,6 +71,7 @@ locationRouter.post(
         latitude,
         longitude,
         userId,
+        isPublic,
         type,
         description,
       );
@@ -111,7 +112,7 @@ locationRouter.patch(
   "/:id",
   authenticateToken,
   async (req: AuthRequest, res: Response) => {
-    const { name, description } = req.body;
+    const { name, description, isPublic } = req.body;
     const locationId = Number(req.params.id);
     const userId = req.user!.id;
 
@@ -121,6 +122,7 @@ locationRouter.patch(
         userId,
         name,
         description,
+        isPublic,
       );
 
       if (!location) {

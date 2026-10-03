@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Dumbbell, MapPin, Sparkles } from "lucide-react";
+import {
+  Check,
+  Dumbbell,
+  Globe2,
+  MapPin,
+  Pencil,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { useParams } from "react-router-dom";
 
 import type {
@@ -30,18 +38,19 @@ import { generateWorkout } from "../api/ai";
 export function LocationPage() {
   const { locationId } = useParams();
   const { goTo, goBack } = useAppNavigation();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
 
   const [location, setLocation] = useState<Location | null>(null);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [locationEquipment, setLocationEquipment] = useState<
     LocationEquipment[]
   >([]);
+
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const [generateSpecs, setGenerateSpecs] = useState<GenerateWorkoutSpecs>({
-    duration_minutes: 45,
+    durationMinutes: 45,
     intensity: "moderate",
     workoutType: "strength",
     muscleGroup: "full-body",
@@ -59,11 +68,13 @@ export function LocationPage() {
     return <main className="min-h-full" style={{ background: C.bg }} />;
   }
 
+  const isOwner = user?.id === location?.createdBy;
+
   const averageDuration =
     workouts.length > 0
       ? Math.round(
           workouts.reduce(
-            (total, workout) => total + workout.duration_minutes,
+            (total, workout) => total + workout.durationMinutes,
             0,
           ) / workouts.length,
         )
@@ -90,16 +101,13 @@ export function LocationPage() {
       );
 
       const draft: WorkoutDraft = {
-        location_id: location.id,
-
+        locationId: location.id,
         name: generatedWorkout.name,
         description: generatedWorkout.description,
-        duration_minutes: String(generatedWorkout.duration_minutes),
-
+        durationMinutes: String(generatedWorkout.durationMinutes),
         intensity: generateSpecs.intensity,
-        workout_type: generateSpecs.workoutType,
-        muscle_group: generateSpecs.muscleGroup,
-
+        workoutType: generateSpecs.workoutType,
+        muscleGroup: generateSpecs.muscleGroup,
         exercises: generatedWorkout.exercises,
       };
 
@@ -115,7 +123,7 @@ export function LocationPage() {
 
   return (
     <main className="min-h-dvh" style={{ background: C.bg }}>
-      {/* Hero */}
+      {/* Map */}
       <div className="relative h-56 overflow-hidden">
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
           <LocationMap
@@ -143,11 +151,43 @@ export function LocationPage() {
           {location.name}
         </h1>
 
+        {/* Address */}
         <div className="mt-1 flex items-center gap-1.5">
           <MapPin size={12} style={{ color: C.textFaint }} />
 
           <span className="text-sm" style={{ color: C.textMuted }}>
             {location.address}
+          </span>
+        </div>
+
+        {/* Ownership / visibility */}
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span
+            className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+            style={{
+              background: isOwner ? C.sageLight : C.communityLight,
+              color: isOwner ? C.forest : C.textSub,
+            }}
+          >
+            {isOwner ? (
+              <>
+                <Check size={11} />
+                Your location
+              </>
+            ) : (
+              <>
+                <Globe2 size={12} />
+                Community spot
+              </>
+            )}
+          </span>
+
+          <span className="text-xs" style={{ color: C.textMuted }}>
+            {isOwner
+              ? location.isPublic
+                ? "Shared publicly"
+                : "Private · only you can see this"
+              : "Shared by another Outlift member"}
           </span>
         </div>
 
@@ -160,7 +200,7 @@ export function LocationPage() {
             value={averageDuration > 0 ? `${averageDuration}m` : "–"}
           />
 
-          <StatCard label="Workouts" value={workouts.length} />
+          <StatCard label="Equipment" value={locationEquipment.length} />
         </div>
 
         {/* Description */}
@@ -173,46 +213,83 @@ export function LocationPage() {
           </p>
         )}
 
-        <section className="mt-5">
-          <h2
-            className="mb-3 text-xs font-semibold uppercase tracking-wider"
-            style={{ color: C.textMuted }}
-          >
-            Amenities & Equipment
-          </h2>
-          <EquipmentChips equipment={locationEquipment} />
-        </section>
+        {/* Equipment */}
+        {locationEquipment.length > 0 && (
+          <section className="mt-5">
+            <h2
+              className="mb-3 text-xs font-semibold uppercase tracking-wider"
+              style={{ color: C.textMuted }}
+            >
+              Amenities & Equipment
+            </h2>
 
-        <div className="mt-6 flex flex-col gap-3">
+            <EquipmentChips equipment={locationEquipment} />
+          </section>
+        )}
+
+        {/* Workout builder */}
+        <section
+          className="mt-6 rounded-2xl p-4"
+          style={{
+            background: C.forest,
+            color: "white",
+          }}
+        >
+          <div className="mb-4 flex items-start gap-3">
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                color: C.sage,
+              }}
+            >
+              <Sparkles size={20} />
+            </div>
+
+            <div>
+              <h2 className="text-sm font-semibold">
+                Build a workout for this spot
+              </h2>
+
+              <p
+                className="mt-1 text-xs leading-relaxed"
+                style={{ color: "rgba(255,255,255,0.65)" }}
+              >
+                Use the available equipment to create a session that fits your
+                goals.
+              </p>
+            </div>
+          </div>
+
           <button
             type="button"
             onClick={() => setShowGenerateModal(true)}
-            className="w-full rounded-2xl py-4 text-sm font-semibold"
+            className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold"
             style={{
-              background: C.forest,
-              color: "white",
+              background: C.sage,
+              color: C.forest,
             }}
           >
-            {"Generate Workout"}
-            <Sparkles size={16} className="ml-2 inline-block" />
+            <Sparkles size={15} />
+            Generate with AI
           </button>
 
           <button
             type="button"
             onClick={() => goTo(`/locations/${locationId}/workouts/new`)}
-            className="w-full rounded-2xl py-4 text-sm font-semibold"
+            className="mt-2 w-full rounded-xl py-3 text-sm font-semibold"
             style={{
-              background: C.card,
-              color: C.forest,
-              border: `1px solid ${C.border}`,
+              background: "rgba(255,255,255,0.1)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.16)",
             }}
           >
-            Create Workout Manually
+            Create manually
           </button>
-        </div>
+        </section>
 
         {/* Workouts */}
-        {workouts.length > 0 && (
+        {workouts.length > 0 ? (
           <section className="mt-6">
             <h2
               className="mb-3 text-xs font-semibold uppercase tracking-wider"
@@ -231,12 +308,9 @@ export function LocationPage() {
               ))}
             </div>
           </section>
-        )}
-
-        {/* Empty state */}
-        {workouts.length === 0 && (
+        ) : (
           <div
-            className="mt-6 rounded-2xl p-6 text-center"
+            className="mt-6 rounded-2xl p-5 text-center"
             style={{
               background: C.card,
               border: `1px solid ${C.border}`,
@@ -253,37 +327,44 @@ export function LocationPage() {
             </p>
 
             <p className="mt-1 text-xs" style={{ color: C.textMuted }}>
-              Add your first workout at this location.
+              Create the first workout tailored to this location.
             </p>
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={() => goTo(`/locations/${locationId}/edit`)}
-          className="mt-3 w-full rounded-2xl py-4 text-sm font-semibold"
-          style={{
-            background: C.card,
-            color: C.forest,
-            border: `1px solid ${C.border}`,
-          }}
-        >
-          Edit Location
-        </button>
+        {/* Owner actions */}
+        {isOwner && (
+          <div className="mt-6 flex gap-2">
+            <button
+              type="button"
+              onClick={() => goTo(`/locations/${locationId}/edit`)}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl py-3 text-sm font-semibold"
+              style={{
+                background: C.card,
+                color: C.forest,
+                border: `1px solid ${C.border}`,
+              }}
+            >
+              <Pencil size={14} />
+              Edit location
+            </button>
 
-        <button
-          type="button"
-          onClick={handleDeleteLocation}
-          className="mt-3 w-full rounded-2xl py-4 text-sm font-semibold"
-          style={{
-            background: C.dangerLight,
-            color: C.danger,
-            border: `1px solid ${C.danger}`,
-          }}
-        >
-          Delete Location
-        </button>
+            <button
+              type="button"
+              onClick={handleDeleteLocation}
+              aria-label="Delete location"
+              className="rounded-xl px-4 py-3"
+              style={{
+                background: C.dangerLight,
+                color: C.danger,
+              }}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        )}
       </div>
+
       {showGenerateModal && (
         <GenerateWorkoutModal
           specs={generateSpecs}

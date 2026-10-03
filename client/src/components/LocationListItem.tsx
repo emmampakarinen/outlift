@@ -1,13 +1,14 @@
-import { ChevronRight, MapPin } from "lucide-react";
+import { Check, ChevronRight, Globe2, MapPin } from "lucide-react";
 import type { Location } from "../shared/types";
 import { useAppNavigation } from "../shared/helpers";
 import { C } from "../shared/colors";
 
 type Props = {
   location: Location;
+  isOwner: boolean;
 };
 
-export function LocationListItem({ location }: Props) {
+export function LocationListItem({ location, isOwner }: Props) {
   const { goTo } = useAppNavigation();
 
   return (
@@ -23,9 +24,7 @@ export function LocationListItem({ location }: Props) {
     >
       <div
         className="flex h-36 items-center justify-center"
-        style={{
-          background: C.sageLight,
-        }}
+        style={{ background: C.sageLight }}
       >
         <div
           className="flex h-14 w-14 items-center justify-center rounded-full"
@@ -67,16 +66,39 @@ export function LocationListItem({ location }: Props) {
           <ChevronRight size={16} style={{ color: C.textFaint }} />
         </div>
 
-        <div className="mt-3 flex items-center gap-1.5">
-          <div
-            className="h-1.5 w-1.5 rounded-full"
-            style={{ background: C.sage }}
-          />
-
-          <span className="text-xs" style={{ color: C.textMuted }}>
-            {location.description || "Outdoor training spot"}
+        {/* Ownership */}
+        <div className="mt-3 flex items-center gap-2">
+          <span
+            className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold"
+            style={{
+              background: isOwner ? C.sageLight : C.communityLight,
+              color: isOwner ? C.forest : C.textSub,
+            }}
+          >
+            {isOwner ? (
+              <>
+                <Check size={11} />
+                {location.isPublic
+                  ? "Your location · Shared"
+                  : "Your location · Private"}
+              </>
+            ) : (
+              <>
+                <Globe2 size={12} />
+                Community spot
+              </>
+            )}
           </span>
         </div>
+
+        {location.description && (
+          <p
+            className="mt-3 line-clamp-2 text-xs"
+            style={{ color: C.textMuted }}
+          >
+            {location.description}
+          </p>
+        )}
       </div>
     </button>
   );

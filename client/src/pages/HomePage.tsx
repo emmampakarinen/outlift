@@ -24,7 +24,7 @@ export function HomePage() {
   const recentlySavedLocations = [...locations]
     .sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
     .slice(0, 5);
 
@@ -74,7 +74,7 @@ export function HomePage() {
           {workouts.length > 0 ? (
             workouts.slice(0, 3).map((workout) => {
               const location = locations.find(
-                (location) => location.id === workout.location_id,
+                (location) => location.id === workout.locationId,
               );
 
               return (

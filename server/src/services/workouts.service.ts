@@ -169,13 +169,13 @@ export async function createWorkout(
        RETURNING *`,
       [
         userId,
-        newWorkoutData.location_id,
+        newWorkoutData.locationId,
         newWorkoutData.name,
         newWorkoutData.description,
-        newWorkoutData.duration_minutes,
+        newWorkoutData.durationMinutes,
         newWorkoutData.intensity,
-        newWorkoutData.workout_type,
-        newWorkoutData.muscle_group,
+        newWorkoutData.workoutType,
+        newWorkoutData.muscleGroup,
       ],
     );
 
@@ -188,7 +188,7 @@ export async function createWorkout(
          VALUES ($1, $2, $3, $4, $5)`,
         [
           newWorkout.id,
-          exercise.exercise_id,
+          exercise.exerciseId,
           exercise.sets,
           exercise.reps,
           exercise.weight,
@@ -250,11 +250,11 @@ export async function updateWorkout(
     if (
       updateWorkoutData.name !== undefined ||
       updateWorkoutData.description !== undefined ||
-      updateWorkoutData.duration_minutes !== undefined ||
-      updateWorkoutData.location_id !== undefined ||
+      updateWorkoutData.durationMinutes !== undefined ||
+      updateWorkoutData.locationId !== undefined ||
       updateWorkoutData.intensity !== undefined ||
-      updateWorkoutData.workout_type !== undefined ||
-      updateWorkoutData.muscle_group !== undefined
+      updateWorkoutData.workoutType !== undefined ||
+      updateWorkoutData.muscleGroup !== undefined
     ) {
       await client.query(
         `UPDATE workouts
@@ -271,11 +271,11 @@ export async function updateWorkout(
         [
           updateWorkoutData.name,
           updateWorkoutData.description,
-          updateWorkoutData.duration_minutes,
-          updateWorkoutData.location_id,
+          updateWorkoutData.durationMinutes,
+          updateWorkoutData.locationId,
           updateWorkoutData.intensity,
-          updateWorkoutData.workout_type,
-          updateWorkoutData.muscle_group,
+          updateWorkoutData.workoutType,
+          updateWorkoutData.muscleGroup,
           workoutId,
           userId,
         ],
@@ -327,7 +327,7 @@ export async function updateWorkout(
                VALUES ($1, $2, $3, $4, $5)`,
             [
               workoutId,
-              exercise.exercise_id,
+              exercise.exerciseId,
               exercise.sets,
               exercise.reps,
               exercise.weight,

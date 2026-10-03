@@ -9,14 +9,14 @@ export async function getExercises() {
 export async function createExercise(
   name: string,
   category: string,
-  primary_muscle: string,
+  primaryMuscle: string,
   userId: number,
 ) {
   const result = await pool.query(
     `INSERT INTO exercises (name, category, primary_muscle, created_by)
              VALUES ($1, $2, $3, $4)
              RETURNING *`,
-    [name, category, primary_muscle, userId],
+    [name, category, primaryMuscle, userId],
   );
 
   return result.rows[0];

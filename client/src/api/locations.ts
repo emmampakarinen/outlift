@@ -31,12 +31,13 @@ export function updateLocation(
   id: number,
   name: string,
   description: string,
+  isPublic: boolean,
   token: string,
 ) {
   return apiRequest<Location>(`/locations/${id}`, {
     token,
     method: "PATCH",
-    body: { name: name, description: description },
+    body: { name: name, description: description, isPublic: isPublic },
   });
 }
 

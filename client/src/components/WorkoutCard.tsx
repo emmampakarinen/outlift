@@ -53,7 +53,7 @@ export function WorkoutCard({ workout, locationName }: Props) {
       >
         <Clock size={12} />
 
-        <span className="text-xs font-medium">{workout.duration_minutes}m</span>
+        <span className="text-xs font-medium">{workout.durationMinutes}m</span>
       </div>
     </button>
   );

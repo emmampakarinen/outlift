@@ -32,7 +32,7 @@ export function ExerciseListItem({ exercise, onAdd, isAdded = false }: Props) {
         </h2>
 
         <p className="mt-0.5 truncate text-xs" style={{ color: C.textMuted }}>
-          {exercise.primary_muscle}
+          {exercise.primaryMuscle}
         </p>
       </div>
 

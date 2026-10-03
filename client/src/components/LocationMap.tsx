@@ -2,7 +2,7 @@ import { AdvancedMarker, Map, useMap } from "@vis.gl/react-google-maps";
 import { MapPin } from "lucide-react";
 
 import { C } from "../shared/colors";
-import { useUserLocation } from "../contexts/useContext";
+import { useAuth, useUserLocation } from "../contexts/useContext";
 import type { Coordinates, Location } from "../shared/types";
 import { useEffect, useState } from "react";
 import { useAppNavigation } from "../shared/helpers";
@@ -56,6 +56,7 @@ export function LocationMap({
     null,
   );
   const { goTo } = useAppNavigation();
+  const { user } = useAuth();
 
   const fallbackCenter: Coordinates = focusPosition ??
     userLocation ?? {
@@ -139,7 +140,7 @@ export function LocationMap({
 
       {locations.map((location) => {
         const isSelected = selectedLocation?.id === location.id;
-
+        // TODO: make the advanced marker to not open pop up when in location page
         return (
           <AdvancedMarker
             key={location.id}
@@ -162,7 +163,8 @@ export function LocationMap({
               <div
                 className="flex h-9 w-9 items-center justify-center rounded-full shadow-md"
                 style={{
-                  background: C.forest,
+                  background:
+                    user?.id === location.createdBy ? C.forest : C.community,
                   color: "white",
                   border: "2px solid white",
                 }}

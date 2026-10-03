@@ -18,6 +18,7 @@ import { BackButton } from "../components/BackButton";
 import { ActionButton } from "../components/ActionButton";
 import { InputField } from "../components/InputField";
 import { EquipmentChips } from "../components/EquipmentChips";
+import IsPublicButton from "../components/IsPublicButton";
 
 export function EditLocationPage() {
   const { locationId } = useParams();
@@ -31,6 +32,8 @@ export function EditLocationPage() {
 
   const [equipment, setEquipment] = useState<Equipment[]>([]);
   const [selectedEquipment, setSelectedEquipment] = useState<Equipment[]>([]);
+
+  const [isPublic, setIsPublic] = useState(false);
 
   useEffect(() => {
     if (!locationId || !token) return;
@@ -51,6 +54,7 @@ export function EditLocationPage() {
       setDescription(locationData.description ?? "");
 
       setEquipment(allEquipment);
+      setIsPublic(locationData.isPublic);
 
       setSelectedEquipment(
         allEquipment.filter((item) =>
@@ -85,6 +89,7 @@ export function EditLocationPage() {
       Number(locationId),
       name.trim(),
       description.trim(),
+      isPublic,
       token,
     );
 
@@ -175,6 +180,7 @@ export function EditLocationPage() {
             onToggle={toggleEquipment}
           />
         </section>
+        <IsPublicButton isPublic={isPublic} setIsPublic={setIsPublic} />
       </div>
     </main>
   );

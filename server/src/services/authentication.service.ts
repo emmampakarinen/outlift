@@ -28,8 +28,8 @@ export async function login(email: string, password: string) {
       id: user.id,
       email: user.email,
       username: user.username,
-      profile_picture_url: user.profile_picture_url,
-      profile_description: user.profile_description,
+      profile_picture_url: user.profilePictureUrl,
+      profile_description: user.profileDescription,
     },
   };
 }

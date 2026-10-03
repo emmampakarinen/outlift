@@ -43,7 +43,7 @@ export function EditExercise({ exercise, onChange, onDelete }: Props) {
 
         <button
           type="button"
-          onClick={() => onDelete(exercise.exercise_id)}
+          onClick={() => onDelete(exercise.exerciseId)}
           className="flex h-8 w-8 items-center justify-center rounded-full"
           style={{
             background: "#FEF2F2",
@@ -74,21 +74,19 @@ export function EditExercise({ exercise, onChange, onDelete }: Props) {
           <ExerciseNumberInput
             value={exercise.sets}
             min={1}
-            onChange={(value) => onChange(exercise.exercise_id, "sets", value)}
+            onChange={(value) => onChange(exercise.exerciseId, "sets", value)}
           />
 
           <ExerciseNumberInput
             value={exercise.reps}
             min={0}
-            onChange={(value) => onChange(exercise.exercise_id, "reps", value)}
+            onChange={(value) => onChange(exercise.exerciseId, "reps", value)}
           />
 
           <ExerciseNumberInput
             value={exercise.weight ?? 0}
             min={0}
-            onChange={(value) =>
-              onChange(exercise.exercise_id, "weight", value)
-            }
+            onChange={(value) => onChange(exercise.exerciseId, "weight", value)}
           />
         </div>
       </div>

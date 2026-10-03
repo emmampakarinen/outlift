@@ -5,16 +5,17 @@ export interface Location {
   longitude: number;
   address?: string;
   description?: string;
-  created_by: number;
-  created_at: Date;
+  isPublic: boolean;
+  createdBy: number;
+  createdAt: Date;
 }
 
 export interface WorkoutExercise {
   id?: number;
-  exercise_id: number;
+  exerciseId: number;
   name: string;
   category: string;
-  primary_muscle: string;
+  primaryMuscle: string;
   sets: number;
   reps: number;
   weight: number | null;
@@ -25,20 +26,20 @@ export interface Exercise {
   id: number;
   name: string;
   category: string;
-  primary_muscle: string;
+  primaryMuscle: string;
 }
 
 export interface Workout {
   id: number;
-  user_id: number;
-  location_id: number | null;
+  userId: number;
+  locationId: number | null;
   name: string;
   description?: string;
-  duration_minutes: number;
+  durationMinutes: number;
   intensity?: WorkoutIntensity;
-  workout_type?: WorkoutType;
-  muscle_group?: MuscleGroup;
-  created_at: string;
+  workoutType?: WorkoutType;
+  muscleGroup?: MuscleGroup;
+  createdAt: string;
   location?: {
     id: number;
     name: string;
@@ -47,37 +48,37 @@ export interface Workout {
 }
 
 export interface WorkoutDraft {
-  location_id: number;
+  locationId: number;
   name: string;
   description: string;
-  duration_minutes: string;
+  durationMinutes: string;
   intensity: WorkoutIntensity;
-  workout_type: WorkoutType;
-  muscle_group: MuscleGroup;
+  workoutType: WorkoutType;
+  muscleGroup: MuscleGroup;
   exercises: WorkoutExercise[];
 }
 
 export interface CreateWorkout {
-  user_id: number;
-  location_id: number;
+  userId: number;
+  locationId: number;
   name: string;
   description: string;
-  duration_minutes: number;
+  durationMinutes: number;
   intensity: WorkoutIntensity;
-  workout_type: WorkoutType;
-  muscle_group: MuscleGroup;
+  workoutType: WorkoutType;
+  muscleGroup: MuscleGroup;
   exercises: WorkoutExercise[];
 }
 
 export interface UpdateWorkout {
   name?: string;
   description?: string;
-  duration_minutes?: number;
-  location_id?: number;
+  durationMinutes?: number;
+  locationId?: number;
 
   intensity?: WorkoutIntensity;
-  workout_type?: WorkoutType;
-  muscle_group?: MuscleGroup;
+  workoutType?: WorkoutType;
+  muscleGroup?: MuscleGroup;
 
   exercises?: WorkoutExercise[];
 }
@@ -91,14 +92,15 @@ export interface User {
   id: number;
   email: string;
   username: string;
-  profile_picture_url?: string;
-  profile_description?: string;
+  profilePictureUrl?: string;
+  profileDescription?: string;
 }
 
 export interface LoginResponse {
   token: string;
   user: User;
 }
+
 export interface CreateUser {
   email: string;
   password: string;
@@ -111,6 +113,7 @@ export interface CreateLocationData {
   description?: string;
   latitude: number;
   longitude: number;
+  isPublic: boolean;
 }
 
 export type EquipmentType =
@@ -136,8 +139,8 @@ export interface Equipment {
   id: number;
   name: string;
   type: EquipmentType;
-  created_by: number | null;
-  is_default: boolean;
+  createdBy: number | null;
+  isDefault: boolean;
 }
 
 export interface LocationEquipment {
@@ -181,10 +184,10 @@ export const MUSCLE_GROUPS = [
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
 
 export interface GenerateWorkoutSpecs {
-  duration_minutes: number;
+  durationMinutes: number;
   intensity: WorkoutDraft["intensity"];
-  workoutType: WorkoutDraft["workout_type"];
-  muscleGroup: WorkoutDraft["muscle_group"];
+  workoutType: WorkoutDraft["workoutType"];
+  muscleGroup: WorkoutDraft["muscleGroup"];
 }
 
 export type GenerateWorkoutInput = GenerateWorkoutSpecs & {
@@ -194,6 +197,6 @@ export type GenerateWorkoutInput = GenerateWorkoutSpecs & {
 export interface GeneratedWorkout {
   name: string;
   description: string;
-  duration_minutes: number;
+  durationMinutes: number;
   exercises: WorkoutExercise[];
 }
